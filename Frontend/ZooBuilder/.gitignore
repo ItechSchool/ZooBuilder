@@ -1,0 +1,7 @@
+/Library
+/Temp
+*.sln
+UserSettings/
+Packages/
+Logs/
+/[B][b]uilds
