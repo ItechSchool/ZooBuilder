@@ -34,9 +34,10 @@ namespace ZooBuilderBackend
 
         async Task BroadcastTime()
         {
+            int counter = 0;
             while (isActive)
             {
-                var message = "Hello you!";
+                var message = $"CALL/Print:Hello, I called you!:{counter}";
                 var bytes = Encoding.UTF8.GetBytes(message);
                 foreach (var client in connections)
                 {
@@ -44,6 +45,7 @@ namespace ZooBuilderBackend
                         client.Client.Send(bytes);
                 }
                 Thread.Sleep(1000);
+                counter++;
             }
         }
     }
