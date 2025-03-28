@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/ZooBuilderBackend/ZooBuilderBackend.csproj": {}
+    "/Users/dominik.rusz/Schule/ZooBuilder/Backend/ConsoleApp1/ConsoleApp1/ConsoleApp1.csproj": {}
   },
   "projects": {
-    "/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/ZooBuilderBackend/ZooBuilderBackend.csproj": {
+    "/Users/dominik.rusz/Schule/ZooBuilder/Backend/ConsoleApp1/ConsoleApp1/ConsoleApp1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/ZooBuilderBackend/ZooBuilderBackend.csproj",
-        "projectName": "ZooBuilderBackend",
-        "projectPath": "/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/ZooBuilderBackend/ZooBuilderBackend.csproj",
+        "projectUniqueName": "/Users/dominik.rusz/Schule/ZooBuilder/Backend/ConsoleApp1/ConsoleApp1/ConsoleApp1.csproj",
+        "projectName": "ConsoleApp1",
+        "projectPath": "/Users/dominik.rusz/Schule/ZooBuilder/Backend/ConsoleApp1/ConsoleApp1/ConsoleApp1.csproj",
         "packagesPath": "/Users/dominik.rusz/.nuget/packages/",
-        "outputPath": "/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/ZooBuilderBackend/obj/",
+        "outputPath": "/Users/dominik.rusz/Schule/ZooBuilder/Backend/ConsoleApp1/ConsoleApp1/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/dominik.rusz/.nuget/NuGet/NuGet.Config"
