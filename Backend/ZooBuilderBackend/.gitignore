@@ -3,3 +3,5 @@
 /ZooBuilderBackend/obj
 /obj
 /bin
+
+*.sln
