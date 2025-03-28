@@ -50,7 +50,7 @@ public class CameraMovement : MonoBehaviour
 
     private void FetchZoomInput()
     {
-        float difference = -Input.mouseScrollDelta.y;
+        float difference = -Input.mouseScrollDelta.y * _zoomSensitivity;
         _zoom = Mathf.Clamp(_zoom + difference, _minZoom, _maxZoom);
     }
     private void UpdateZoomPosition()
