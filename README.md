@@ -1,5 +1,5 @@
 # Zoo Builder
-## Ressources
+## Resources
 #### Planning: 
 https://trello.com/b/wfbegrnw/zoobuilder 
 #### Orga and Brainstorming:
