@@ -1,6 +1,0 @@
-/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/ZooBuilderBackend/bin/Debug/ZooBuilderBackend.exe
-/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/ZooBuilderBackend/bin/Debug/ZooBuilderBackend.pdb
-/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/ZooBuilderBackend/obj/Debug/ZooBuilderBackend.csproj.AssemblyReference.cache
-/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/ZooBuilderBackend/obj/Debug/ZooBuilderBackend.csproj.CoreCompileInputs.cache
-/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/ZooBuilderBackend/obj/Debug/ZooBuilderBackend.exe
-/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/ZooBuilderBackend/obj/Debug/ZooBuilderBackend.pdb

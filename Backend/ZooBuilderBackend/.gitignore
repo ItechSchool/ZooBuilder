@@ -1,3 +1,5 @@
 /.idea
 /ZooBuilderBackend/bin
 /ZooBuilderBackend/obj
+/obj
+/bin
