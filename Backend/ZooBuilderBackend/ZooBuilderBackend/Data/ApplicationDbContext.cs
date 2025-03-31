@@ -44,7 +44,8 @@ public class ApplicationDbContext : DbContext
             new Building { Id = 9, Name = "Food Truck", Type = "Snack", SizeHeight = 2, SizeWidth = 1, Costs = 10, Capacity = 300, MaxRevenue = 30 },
             new Building { Id = 10, Name = "Ice Cream Stand", Type = "Snack", SizeHeight = 2, SizeWidth = 1, Costs = 8, Capacity = 100, MaxRevenue = 20 },
             new Building { Id = 11, Name = "Lemonade Stand", Type = "Snack", SizeHeight = 2, SizeWidth = 1, Costs = 7, Capacity = 100, MaxRevenue = 15 },
-            new Building { Id = 12, Name = "Jungle Cafe", Type = "Snack", SizeHeight = 6, SizeWidth = 4, Costs = 20, Capacity = 300, MaxRevenue = 50 }
+            new Building { Id = 12, Name = "Jungle Cafe", Type = "Snack", SizeHeight = 6, SizeWidth = 4, Costs = 20, Capacity = 300, MaxRevenue = 50 },
+            new Building { Id = 13, Name = "Street", Type = "Path", SizeHeight = 1, SizeWidth = 1, Costs = 1 }
             );
     }
 }
