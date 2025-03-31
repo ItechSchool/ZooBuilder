@@ -28,6 +28,7 @@ namespace ZooBuilderBackend
             {
                 var client = await server.AcceptTcpClientAsync();
                 connections.Add(client);
+                SendAccountInfo(client);
                 Console.WriteLine($"Client connected");
             }
         }
@@ -63,6 +64,11 @@ namespace ZooBuilderBackend
                 connections.Remove(client);
                 client.Dispose();
             }
+        }
+        
+        private void SendAccountInfo(TcpClient client)
+        {
+        
         }
     }
 }

@@ -13,14 +13,26 @@ using UnityEngine;
 
 public class ConnectionHandler : MonoBehaviour
 {
+    public static ConnectionHandler Instance { get; private set; }
+
+    public bool Connected => Instance._client is { Connected: true };
+    
     [SerializeField] private string ip;
     [SerializeField] private int port;
+    
+    private TcpClient _client;
+    
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     void Start()
     {
-        var client = new TcpClient();
-        client.Connect(IPAddress.Parse(ip), port);
+        _client = new TcpClient();
+        _client.Connect(IPAddress.Parse(ip), port);
         Debug.Log("Connected");
-        StartCoroutine(ReceiveMessages(client));
+        StartCoroutine(ReceiveMessages(_client));
     }
 
     IEnumerator ReceiveMessages(TcpClient client)
