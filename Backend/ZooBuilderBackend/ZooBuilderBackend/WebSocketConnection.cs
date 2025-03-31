@@ -35,17 +35,32 @@ namespace ZooBuilderBackend
         async Task BroadcastTime()
         {
             int counter = 0;
+            var disconnectedClients = new List<TcpClient>();
             while (isActive)
             {
                 var message = $"CALL/Print:Hello, I called you!:{counter}";
                 var bytes = Encoding.UTF8.GetBytes(message);
                 foreach (var client in connections)
                 {
-                    if (client.Client.Connected)
+                    try
+                    {
                         client.Client.Send(bytes);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (client.Connected == false)
+                        {
+                            disconnectedClients.Add(client);
+                        }
+                    }
                 }
                 Thread.Sleep(1000);
                 counter++;
+            }
+
+            foreach (var client in disconnectedClients)
+            {
+                connections.Remove(client);
             }
         }
     }
