@@ -3,10 +3,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace ZooBuilderBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +20,7 @@ namespace ZooBuilderBackend.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Species = table.Column<string>(type: "text", nullable: false),
-                    Costs = table.Column<decimal>(type: "numeric", nullable: false),
+                    Costs = table.Column<int>(type: "integer", nullable: false),
                     Hunger = table.Column<int>(type: "integer", nullable: false),
                     Diet = table.Column<string>(type: "text", nullable: false),
                     Attraction = table.Column<int>(type: "integer", nullable: false)
@@ -26,6 +28,19 @@ namespace ZooBuilderBackend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Animal", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Player",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    DeviceId = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Player", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -38,26 +53,19 @@ namespace ZooBuilderBackend.Migrations
                     Type = table.Column<string>(type: "text", nullable: false),
                     SizeHeight = table.Column<int>(type: "integer", nullable: false),
                     SizeWidth = table.Column<int>(type: "integer", nullable: false),
-                    Costs = table.Column<decimal>(type: "numeric", nullable: false),
-                    AnimalCapacity = table.Column<int>(type: "integer", nullable: false)
+                    Costs = table.Column<int>(type: "integer", nullable: false),
+                    Capacity = table.Column<int>(type: "integer", nullable: false),
+                    MaxRevenue = table.Column<int>(type: "integer", nullable: false),
+                    AnimalId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Building", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Player",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Password = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Player", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Building_Animal_AnimalId",
+                        column: x => x.AnimalId,
+                        principalTable: "Animal",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -67,9 +75,8 @@ namespace ZooBuilderBackend.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
-                    Money = table.Column<decimal>(type: "numeric", nullable: false),
+                    Money = table.Column<int>(type: "integer", nullable: false),
                     Vegetables = table.Column<int>(type: "integer", nullable: false),
-                    Meat = table.Column<int>(type: "integer", nullable: false),
                     PlayerId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -92,19 +99,13 @@ namespace ZooBuilderBackend.Migrations
                     XCoordinate = table.Column<int>(type: "integer", nullable: false),
                     YCoordinate = table.Column<int>(type: "integer", nullable: false),
                     AnimalCount = table.Column<int>(type: "integer", nullable: false),
-                    Revenue = table.Column<decimal>(type: "numeric", nullable: false),
+                    Connected = table.Column<bool>(type: "boolean", nullable: false),
                     ZooId = table.Column<int>(type: "integer", nullable: false),
-                    BuildingId = table.Column<int>(type: "integer", nullable: true),
-                    AnimalId = table.Column<int>(type: "integer", nullable: true)
+                    BuildingId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GridPlacement", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_GridPlacement_Animal_AnimalId",
-                        column: x => x.AnimalId,
-                        principalTable: "Animal",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_GridPlacement_Building_BuildingId",
                         column: x => x.BuildingId,
@@ -118,9 +119,24 @@ namespace ZooBuilderBackend.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Animal",
+                columns: new[] { "Id", "Attraction", "Costs", "Diet", "Hunger", "Species" },
+                values: new object[,]
+                {
+                    { 1, 5, 15, "Meat", 4, "Lion" },
+                    { 2, 4, 12, "Vegetables", 3, "Giraffe" },
+                    { 3, 5, 20, "Vegetables", 4, "Elephant" },
+                    { 4, 2, 8, "Fish", 2, "Penguin" },
+                    { 5, 4, 12, "Vegetables", 2, "Kangaroo" },
+                    { 6, 3, 10, "Vegetables", 3, "Zebra" },
+                    { 7, 5, 18, "Bamboo", 2, "Panda" },
+                    { 8, 1, 3, "Meat", 1, "Rat" }
+                });
+
             migrationBuilder.CreateIndex(
-                name: "IX_GridPlacement_AnimalId",
-                table: "GridPlacement",
+                name: "IX_Building_AnimalId",
+                table: "Building",
                 column: "AnimalId");
 
             migrationBuilder.CreateIndex(
@@ -146,13 +162,13 @@ namespace ZooBuilderBackend.Migrations
                 name: "GridPlacement");
 
             migrationBuilder.DropTable(
-                name: "Animal");
-
-            migrationBuilder.DropTable(
                 name: "Building");
 
             migrationBuilder.DropTable(
                 name: "Zoo");
+
+            migrationBuilder.DropTable(
+                name: "Animal");
 
             migrationBuilder.DropTable(
                 name: "Player");

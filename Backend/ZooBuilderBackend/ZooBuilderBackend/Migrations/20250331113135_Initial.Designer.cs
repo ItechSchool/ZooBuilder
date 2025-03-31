@@ -11,8 +11,8 @@ using ZooBuilderBackend.Data;
 namespace ZooBuilderBackend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250330110905_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250331113135_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,8 +35,8 @@ namespace ZooBuilderBackend.Migrations
                     b.Property<int>("Attraction")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Costs")
-                        .HasColumnType("numeric");
+                    b.Property<int>("Costs")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Diet")
                         .IsRequired()
@@ -52,6 +52,80 @@ namespace ZooBuilderBackend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Animal");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Attraction = 5,
+                            Costs = 15,
+                            Diet = "Meat",
+                            Hunger = 4,
+                            Species = "Lion"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Attraction = 4,
+                            Costs = 12,
+                            Diet = "Vegetables",
+                            Hunger = 3,
+                            Species = "Giraffe"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Attraction = 5,
+                            Costs = 20,
+                            Diet = "Vegetables",
+                            Hunger = 4,
+                            Species = "Elephant"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Attraction = 2,
+                            Costs = 8,
+                            Diet = "Fish",
+                            Hunger = 2,
+                            Species = "Penguin"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Attraction = 4,
+                            Costs = 12,
+                            Diet = "Vegetables",
+                            Hunger = 2,
+                            Species = "Kangaroo"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Attraction = 3,
+                            Costs = 10,
+                            Diet = "Vegetables",
+                            Hunger = 3,
+                            Species = "Zebra"
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Attraction = 5,
+                            Costs = 18,
+                            Diet = "Bamboo",
+                            Hunger = 2,
+                            Species = "Panda"
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Attraction = 1,
+                            Costs = 3,
+                            Diet = "Meat",
+                            Hunger = 1,
+                            Species = "Rat"
+                        });
                 });
 
             modelBuilder.Entity("ZooBuilderBackend.Models.Building", b =>
@@ -62,11 +136,17 @@ namespace ZooBuilderBackend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("AnimalCapacity")
+                    b.Property<int?>("AnimalId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Costs")
-                        .HasColumnType("numeric");
+                    b.Property<int>("Capacity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("Costs")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("MaxRevenue")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -84,6 +164,8 @@ namespace ZooBuilderBackend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AnimalId");
+
                     b.ToTable("Building");
                 });
 
@@ -98,14 +180,11 @@ namespace ZooBuilderBackend.Migrations
                     b.Property<int>("AnimalCount")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("AnimalId")
-                        .HasColumnType("integer");
-
                     b.Property<int?>("BuildingId")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("Revenue")
-                        .HasColumnType("numeric");
+                    b.Property<bool>("Connected")
+                        .HasColumnType("boolean");
 
                     b.Property<int>("XCoordinate")
                         .HasColumnType("integer");
@@ -117,8 +196,6 @@ namespace ZooBuilderBackend.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AnimalId");
 
                     b.HasIndex("BuildingId");
 
@@ -135,11 +212,7 @@ namespace ZooBuilderBackend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Password")
+                    b.Property<string>("DeviceId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -156,11 +229,8 @@ namespace ZooBuilderBackend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Meat")
+                    b.Property<int>("Money")
                         .HasColumnType("integer");
-
-                    b.Property<decimal>("Money")
-                        .HasColumnType("numeric");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -179,12 +249,17 @@ namespace ZooBuilderBackend.Migrations
                     b.ToTable("Zoo");
                 });
 
-            modelBuilder.Entity("ZooBuilderBackend.Models.GridPlacement", b =>
+            modelBuilder.Entity("ZooBuilderBackend.Models.Building", b =>
                 {
                     b.HasOne("ZooBuilderBackend.Models.Animal", "Animal")
                         .WithMany()
                         .HasForeignKey("AnimalId");
 
+                    b.Navigation("Animal");
+                });
+
+            modelBuilder.Entity("ZooBuilderBackend.Models.GridPlacement", b =>
+                {
                     b.HasOne("ZooBuilderBackend.Models.Building", "Building")
                         .WithMany()
                         .HasForeignKey("BuildingId");
@@ -194,8 +269,6 @@ namespace ZooBuilderBackend.Migrations
                         .HasForeignKey("ZooId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Animal");
 
                     b.Navigation("Building");
 
