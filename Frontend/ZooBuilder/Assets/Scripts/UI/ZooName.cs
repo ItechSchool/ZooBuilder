@@ -9,14 +9,15 @@ public class ZooName : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _nameText;
 
     private string _currentText;
-    
+
+    private void Start()
+    {
+        ConnectionHandler.Instance.ZooNameUpdated += zooName => _currentText = zooName;
+    }
+
     private void Update()
     {
-        if (ConnectionHandler.Instance.Connected)
-        {
-            _currentText = "Standard Zoo";
-        }
-        else
+        if (ConnectionHandler.Instance.Connected == false)
         {
             _currentText = "Connecting ...";
         }
