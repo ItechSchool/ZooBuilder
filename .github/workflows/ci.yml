@@ -14,7 +14,7 @@ jobs:
     
     steps:
       - name: Checkout
-        uses: actions/checkout@v2 # checkt code in runner umgebung aus
+        uses: actions/checkout@v2 # Checkt code in runner umgebung aus
      
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
