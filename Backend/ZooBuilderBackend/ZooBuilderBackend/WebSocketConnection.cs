@@ -61,6 +61,7 @@ namespace ZooBuilderBackend
             foreach (var client in disconnectedClients)
             {
                 connections.Remove(client);
+                client.Dispose();
             }
         }
     }
