@@ -26,7 +26,7 @@ jobs:
         working-directory: Backend/ZooBuilderBackend
 
       - name: Build
-        run: dotnet build --no-restore # es wurde schon gerestored
+        run: dotnet build --no-restore
         working-directory: Backend/ZooBuilderBackend
   
       - name: Verify test project exists
@@ -35,7 +35,7 @@ jobs:
       - name: Test
         run: dotnet test ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj --verbosity normal --logger:trx
         working-directory: Backend/ZooBuilderBackend
-
+  
   frontend:
     runs-on: ubuntu-latest
     
@@ -43,19 +43,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+      - name: Setup Unity
+        uses: webbertakken/unity-actions/setup@v2
         with:
-          dotnet-version: '8.0.401'
+          unityVersion: 2022.3.21f1
 
-      - name: Install dependencies
-        run: dotnet restore
-        working-directory: Frontend/ZooBuilder
-
-      - name: Build
-        run: dotnet build --no-restore
-        working-directory: Frontend/ZooBuilder
-
-      - name: Test
-        run: dotnet test --no-build --verbosity normal
-        working-directory: Frontend/ZooBuilder
+      - name: Test Unity
+        uses: webbertakken/unity-actions/test-runner@v2
+        with:
+          unityVersion: 2022.3.21f1
+          testMode: playmode
+          artifactsPath: results
