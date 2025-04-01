@@ -28,6 +28,9 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
         working-directory: Backend/ZooBuilderBackend
+  
+      - name: Verify test project exists
+        run: ls -la Backend/ZooBuilderBackend/ZooBuilderBackend.Tests/
 
       - name: Test
         run: dotnet test Backend/ZooBuilderBackend/ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj --no-build --verbosity normal --logger:trx
