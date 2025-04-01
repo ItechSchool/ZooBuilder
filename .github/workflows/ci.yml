@@ -1,5 +1,5 @@
 name: CI
-# should fail
+
 on: 
   push:
     branches:
@@ -8,24 +8,51 @@ on:
     branches:
       - main
 
-jobs: 
-  builds:
+jobs:
+  backend:
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout
-        uses: actions/checkout@v2 # Checkt code in runner-umgebung aus
-     
+        uses: actions/checkout@v2
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '7.0.x'
-     
+
       - name: Install dependencies
         run: dotnet restore
-      
+        working-directory: Backend/ZooBuilderBackend
+
       - name: Build
         run: dotnet build --no-restore
-        
+        working-directory: Backend/ZooBuilderBackend
+
       - name: Test
         run: dotnet test --no-build --verbosity normal
+        working-directory: Backend/ZooBuilderBackend
+
+  frontend:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+
+      - name: Install dependencies
+        run: dotnet restore
+        working-directory: Frontend/ZooBuilder
+
+      - name: Build
+        run: dotnet build --no-restore
+        working-directory: Frontend/ZooBuilder
+
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+        working-directory: Frontend/ZooBuilder
