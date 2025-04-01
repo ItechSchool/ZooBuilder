@@ -1,5 +1,5 @@
 name: CI
-
+# should fail
 on: 
   push:
     branches:
