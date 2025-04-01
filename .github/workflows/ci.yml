@@ -33,7 +33,7 @@ jobs:
         run: ls -la Backend/ZooBuilderBackend/ZooBuilderBackend.Tests/
 
       - name: Test
-        run: dotnet test ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj --no-build --verbosity normal --logger:trx
+        run: dotnet test ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj --verbosity normal --logger:trx
         working-directory: Backend/ZooBuilderBackend
 
   frontend:
