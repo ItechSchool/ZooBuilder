@@ -30,7 +30,7 @@ jobs:
         working-directory: Backend/ZooBuilderBackend
 
       - name: Test
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test --no-build --verbosity normal --logger:trx
         working-directory: Backend/ZooBuilderBackend
 
   frontend:
