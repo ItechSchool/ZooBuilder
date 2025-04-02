@@ -66,7 +66,6 @@ namespace SharedNetwork
                         {
                             if (expectedArgument.ParameterType.GetInterfaces().Contains(typeof(IStringSerializable)))
                             {
-                                Console.WriteLine("Serializable object found");
                                 var castedObject = (IStringSerializable)Activator.CreateInstance(expectedArgument.ParameterType);
                                 castedObject.FromString(argument);
                                 args.Add(castedObject);
