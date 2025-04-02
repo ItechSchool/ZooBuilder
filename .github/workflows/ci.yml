@@ -106,12 +106,12 @@ jobs:
           cat TestResults/coverage/html/Summary.txt
 
       - name: Upload coverage artifact
-        if: always()
-        working-directory: Backend/ZooBuilderBackend
         uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: TestResults/coverage
+        working-directory: Backend/ZooBuilderBackend
+        if: always()
 
   frontend:
     permissions: write-all
