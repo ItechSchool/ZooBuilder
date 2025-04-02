@@ -37,6 +37,7 @@ jobs:
         working-directory: Backend/ZooBuilderBackend
   
   frontend:
+    permissions: write-all
     runs-on: ubuntu-latest
     
     steps:
