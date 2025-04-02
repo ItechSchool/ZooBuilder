@@ -19,7 +19,7 @@ public class PlayerService
             throw new Exception("This player already exists!");
         }
         var player = new Player { DeviceId = deviceId };
-        
+
         db.Player.Add(player);
         db.SaveChanges();
     }

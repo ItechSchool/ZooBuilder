@@ -61,7 +61,7 @@ namespace ZooBuilderBackend
                 Thread.Sleep(pingIntervall);
             }
         }
-        
+
         private void ReceiveMessagesFromClient(TcpClient client)
         {
             while (connections.Contains(client))
@@ -115,7 +115,7 @@ namespace ZooBuilderBackend
 
             SendAccountInfo(client);
         }
-        
+
         private void SendAccountInfo(TcpClient client)
         {
             var message = $"CALL/SetZooName:Zoo #{new Random().Next(10000, 99999)}";
@@ -127,7 +127,7 @@ namespace ZooBuilderBackend
                 }
             }
         }
-        
+
         private void BuyBuilding(TcpClient client, string clientId, int buildingId)
         {
             Console.WriteLine($"Client with id: {clientId} bought building {buildingId}");
