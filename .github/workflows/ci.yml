@@ -42,8 +42,20 @@ jobs:
         run: ls -la Backend/ZooBuilderBackend/ZooBuilderBackend.Tests/
 
       - name: Test
-        run: dotnet test ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj --verbosity normal --logger:trx
+        run: |
+          # Put results in a directory, for example “./TestResults”
+          dotnet test \
+            ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj \
+            --verbosity normal \
+            --logger "trx;LogFileName=test-results.trx" \
+            --results-directory "./TestResults"
         working-directory: Backend/ZooBuilderBackend
+
+      - name: Upload test results (TRX)
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results
+          path: Backend/ZooBuilderBackend/TestResults/test-results.trx
         
   backend-test-coverage: # this one will be only informal
     permissions: write-all
@@ -76,7 +88,7 @@ jobs:
         working-directory: Backend/ZooBuilderBackend
       
       - name: Upload coverage artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage
           path: Backend/ZooBuilderBackend/TestResults/coverage
