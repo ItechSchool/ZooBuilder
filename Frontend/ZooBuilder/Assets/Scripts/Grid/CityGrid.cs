@@ -28,8 +28,8 @@ namespace Grid
 
         public Vector3 GetPositionOnGrid(int x, int y)
         {
-            float xPos = x * _cellSize.x + _cellSize.x / 2;
-            float yPos = y * _cellSize.y + _cellSize.y / 2;
+            float xPos = x * _cellSize.x;
+            float yPos = y * _cellSize.y;
             return new Vector3(xPos, 0, yPos) + transform.position;
         }
 
