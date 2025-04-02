@@ -1,10 +1,10 @@
 name: CI
 
-on: 
+on:
   push:
     branches:
       - main
-  pull_request: 
+  pull_request:
     branches:
       - main
 
@@ -37,7 +37,7 @@ jobs:
             echo "please use 'dotnet format' to fix" && exit 1
           )
         working-directory: Backend/ZooBuilderBackend
-  
+
       - name: Verify test project exists
         run: ls -la Backend/ZooBuilderBackend/ZooBuilderBackend.Tests/
 
@@ -56,7 +56,7 @@ jobs:
         with:
           name: backend-test-results
           path: Backend/ZooBuilderBackend/TestResults/test-results.trx
-        
+  
   backend-test-coverage: # this one will be only informal
     permissions: write-all
     runs-on: ubuntu-latest
@@ -72,26 +72,45 @@ jobs:
 
       - name: Restore dependencies
         run: dotnet restore
-        working-directory: Backend/ZooBuilderBackend 
-        
-      - name: Test with coverage
+        working-directory: Backend/ZooBuilderBackend
+
+      - name: Test with coverage (will fail if <50%)
         run: |
           dotnet test \
-            ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj \
-            --verbosity normal --logger trx \
-            --collect "XPlat Code Coverage" \
-            --results-directory ./TestResults \
-            /p:CollectCoverage=true \
-            /p:CoverletOutput=TestResults/coverage/ \
-            /p:CoverletOutputFormat=lcov \
-            /p:Exclude="[xunit*]*"
-        working-directory: Backend/ZooBuilderBackend
-      
-      - name: Upload coverage artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage
-          path: Backend/ZooBuilderBackend/TestResults/coverage
+           ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj \
+           --verbosity normal \
+           --logger "trx;LogFileName=test-results.trx" \
+           --collect "XPlat Code Coverage" \
+           --results-directory "./TestResults" \
+           /p:CollectCoverage=true \
+           /p:CoverletOutput="./TestResults/coverage/coverage" \
+           /p:CoverletOutputFormat="lcov;cobertura" \
+           /p:Threshold=50 \
+           /p:ThresholdType=line \
+           /p:ThresholdStat=minimum \
+           /p:Exclude="[xunit*]*"
+          working-directory: Backend/ZooBuilderBackend
+  
+          - name: Install ReportGenerator
+            if: success()
+            run: dotnet tool install --global dotnet-reportgenerator-globaltool
+  
+          - name: Generate & print coverage summary
+            if: success()
+            run: |
+              reportgenerator \
+                -reports:Backend/ZooBuilderBackend/TestResults/coverage/coverage.cobertura.xml \
+                -targetdir:Backend/ZooBuilderBackend/TestResults/coverage/html \
+                -reporttypes:TextSummary
+              echo "Coverage summary:"
+              cat Backend/ZooBuilderBackend/TestResults/coverage/html/Summary.txt
+  
+          - name: Upload coverage artifact
+            if: always() # still upload if coverage threshold fails
+            uses: actions/upload-artifact@v4
+            with:
+              name: coverage
+              path: Backend/ZooBuilderBackend/TestResults/coverage
   
   frontend:
     permissions: write-all
