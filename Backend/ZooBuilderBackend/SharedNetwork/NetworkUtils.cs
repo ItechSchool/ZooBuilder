@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
@@ -63,7 +64,17 @@ namespace SharedNetwork
                         string argument = arguments[i - additionalArgs.Length + 1];
                         try
                         {
-                            args.Add(Convert.ChangeType(argument, expectedArgument.ParameterType));
+                            if (expectedArgument.ParameterType.GetInterfaces().Contains(typeof(IStringSerializable)))
+                            {
+                                Console.WriteLine("Serializable object found");
+                                var castedObject = (IStringSerializable)Activator.CreateInstance(expectedArgument.ParameterType);
+                                castedObject.FromString(argument);
+                                args.Add(castedObject);
+                            }
+                            else
+                            {
+                                args.Add(Convert.ChangeType(argument, expectedArgument.ParameterType));    
+                            }
                         }
                         catch
                         {

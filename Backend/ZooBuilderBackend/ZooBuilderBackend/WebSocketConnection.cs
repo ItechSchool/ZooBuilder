@@ -118,16 +118,16 @@ namespace ZooBuilderBackend
         
         private void SendAccountInfo(TcpClient client)
         {
-            var message = $"CALL/SetZooName:Zoo #{new Random().Next(10000, 99999)}";
-            if (NetworkUtils.TrySend(client.Client, message) == false)
+            var data = new ExampleDto()
             {
-                if (client.Connected == false)
-                {
-                    connections.Remove(client);
-                }
-            }
+                ExampleInt = 1,
+                ExampleFloat = 4.263f,
+                ExampleString = "Hello you"
+            };
+            string message = MessageBuilder.Call("SendData").AddParameter(data).Build();
+            NetworkUtils.TrySend(client.Client, message);
         }
-        
+
         private void BuyBuilding(TcpClient client, string clientId, int buildingId)
         {
             Console.WriteLine($"Client with id: {clientId} bought building {buildingId}");
