@@ -7,15 +7,29 @@ namespace Grid
 {
     public class CityGrid : MonoBehaviour
     {
+        public static CityGrid Instance { get; private set; }
+        
         [SerializeField] private Vector2Int _gridSize;
 
         [SerializeField] private Vector2 _cellSize;
 
         [SerializeField] private LineRenderer _gridRenderer;
 
+        private void Awake()
+        {
+            Instance = this;
+        }
+
         private void Start()
         {
             GenerateGridGraphic();
+        }
+
+        public Vector3 GetPositionOnGrid(int x, int y)
+        {
+            float xPos = x * _cellSize.x + _cellSize.x / 2;
+            float yPos = y * _cellSize.y + _cellSize.y / 2;
+            return new Vector3(xPos, 0, yPos) + transform.position;
         }
 
         private void GenerateGridGraphic()
