@@ -8,24 +8,41 @@ on:
     branches:
       - main
 
-jobs: 
-  builds:
+jobs:
+  backend:
     runs-on: ubuntu-latest
     
     steps:
       - name: Checkout
-        uses: actions/checkout@v2 # Checkt code in runner-umgebung aus
-     
+        uses: actions/checkout@v2
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '7.0.x'
-     
-      - name: Install dependencies
+          dotnet-version: '8.0.401'
+
+      - name: Restore dependencies
         run: dotnet restore
-      
+        working-directory: Backend/ZooBuilderBackend
+
       - name: Build
         run: dotnet build --no-restore
-        
+        working-directory: Backend/ZooBuilderBackend
+  
+      - name: Verify test project exists
+        run: ls -la Backend/ZooBuilderBackend/ZooBuilderBackend.Tests/
+
       - name: Test
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj --verbosity normal --logger:trx
+        working-directory: Backend/ZooBuilderBackend
+  
+  frontend:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Fail - No license
+        if: ${{ !startsWith(env.UNITY_LICENSE, '<') }}
+        run: exit 1
+        working-directory: Frontend/ZooBuilder
+        
+      

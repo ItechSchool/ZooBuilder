@@ -20,6 +20,6 @@ public class CalculatorTests
         int result = calculator.Add(2, 3);
 
         // Assert
-        Assert.Equal(4, result);
+        Assert.Equal(5, result);
     }
 }
