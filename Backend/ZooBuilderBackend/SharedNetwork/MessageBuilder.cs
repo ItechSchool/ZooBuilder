@@ -8,8 +8,8 @@ namespace SharedNetwork
         private string _invocationType = null!;
         private string _methodName = null!;
         private object[] _parameter = null!;
-    
-        private MessageBuilder() {}
+
+        private MessageBuilder() { }
 
         public static MessageBuilder Call(string methodName)
         {

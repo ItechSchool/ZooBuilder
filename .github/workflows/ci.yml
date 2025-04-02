@@ -28,6 +28,15 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
         working-directory: Backend/ZooBuilderBackend
+
+      - name: Verify formatting
+        run: |
+          echo "Verifying code formatting..."
+          # If dotnet format finds changes, exit with a custom message.
+          dotnet format --verify-no-changes || (
+            echo "please use 'dotnet format' to fix" && exit 1
+          )
+        working-directory: Backend/ZooBuilderBackend
   
       - name: Verify test project exists
         run: ls -la Backend/ZooBuilderBackend/ZooBuilderBackend.Tests/
@@ -37,12 +46,22 @@ jobs:
         working-directory: Backend/ZooBuilderBackend
   
   frontend:
+    permissions: write-all
     runs-on: ubuntu-latest
     
     steps:
-      - name: Fail - No license
-        if: ${{ !startsWith(env.UNITY_LICENSE, '<') }}
-        run: exit 1
-        working-directory: Frontend/ZooBuilder
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Test
+        uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: Frontend/ZooBuilder
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          unityVersion: 2022.3.21f1
         
       

@@ -14,7 +14,7 @@ public class GridPlacementService
     {
         var building = _db.Building.Find(buildingId);
         var zoo = _db.Zoo.Find(zooId);
-        
+
         if (building == null)
         {
             throw new Exception("Can not find building with id " + buildingId);
@@ -34,7 +34,7 @@ public class GridPlacementService
         }
 
         var entity = new GridPlacement
-            { XCoordinate = x, YCoordinate = y, Connected = false, ZooId = zooId, BuildingId = buildingId };
+        { XCoordinate = x, YCoordinate = y, Connected = false, ZooId = zooId, BuildingId = buildingId };
         _db.GridPlacement.Add(entity);
         zoo.Money -= building.Costs;
         _db.SaveChanges();
