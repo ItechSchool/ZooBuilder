@@ -7,7 +7,9 @@ namespace ZooBuilderBackend.Services;
 public class GridPlacementService
 {
     private readonly ApplicationDbContext _db = new();
-    
+    /// <summary>In this method a building gets placed on the city grid.</summary>
+    /// <summary>The method checks for certain things (money, spot where it should be placed, buildingId, and ZooId) and throws an exception when it fails.</summary>
+    /// <summary> Remember: Handle the exceptions when calling this method!</summary>
     public void PlaceBuilding(int buildingId, int x, int y, int zooId)
     {
         var building = _db.Building.Find(buildingId);
@@ -19,14 +21,14 @@ public class GridPlacementService
         }
         if (zoo == null)
         {
-            throw new Exception("Zoo does not exist: " + zooId);
+            throw new Exception("Zoo does not exist " + zooId);
         }
-        if (!AreaFree(x, y, building, zooId))
+        if (!IsAreaFree(x, y, building, zooId))
         {
             throw new Exception("This spot is not free, please building somewhere else.");
         }
 
-        if (!ValidateMoney(zoo.Money, building.Costs))
+        if (!HasEnoughMoney(zoo.Money, building.Costs))
         {
             throw new Exception("Zoo with id " + zooId + " does not have enough money to buy building " + buildingId);
         }
@@ -38,12 +40,12 @@ public class GridPlacementService
         _db.SaveChanges();
     }
 
-    private static bool ValidateMoney(int money, int buildingCosts)
+    private static bool HasEnoughMoney(int money, int buildingCosts)
     {
         return money >= buildingCosts;
     }
 
-    private bool AreaFree(int x, int y, Building building, int zooId)
+    private bool IsAreaFree(int x, int y, Building building, int zooId)
     {
         var rectBx1 = x;
         var rectBx2 = x + building.SizeWidth;
