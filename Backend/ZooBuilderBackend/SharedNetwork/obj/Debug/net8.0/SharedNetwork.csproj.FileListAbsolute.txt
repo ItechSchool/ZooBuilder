@@ -1,0 +1,12 @@
+/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/SharedNetwork/bin/Debug/net8.0/SharedNetwork.deps.json
+/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/SharedNetwork/bin/Debug/net8.0/SharedNetwork.dll
+/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/SharedNetwork/bin/Debug/net8.0/SharedNetwork.pdb
+/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/SharedNetwork/obj/Debug/net8.0/SharedNetwork.GeneratedMSBuildEditorConfig.editorconfig
+/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/SharedNetwork/obj/Debug/net8.0/SharedNetwork.AssemblyInfoInputs.cache
+/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/SharedNetwork/obj/Debug/net8.0/SharedNetwork.AssemblyInfo.cs
+/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/SharedNetwork/obj/Debug/net8.0/SharedNetwork.csproj.CoreCompileInputs.cache
+/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/SharedNetwork/obj/Debug/net8.0/SharedNetwork.sourcelink.json
+/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/SharedNetwork/obj/Debug/net8.0/SharedNetwork.dll
+/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/SharedNetwork/obj/Debug/net8.0/refint/SharedNetwork.dll
+/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/SharedNetwork/obj/Debug/net8.0/SharedNetwork.pdb
+/Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/SharedNetwork/obj/Debug/net8.0/ref/SharedNetwork.dll

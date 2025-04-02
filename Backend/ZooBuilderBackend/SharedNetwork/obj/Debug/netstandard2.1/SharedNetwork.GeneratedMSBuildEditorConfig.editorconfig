@@ -1,0 +1,5 @@
+is_global = true
+build_property.RootNamespace = SharedNetwork
+build_property.ProjectDir = /Users/dominik.rusz/Schule/ZooBuilder/Backend/ZooBuilderBackend/SharedNetwork/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
