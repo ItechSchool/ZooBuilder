@@ -11,6 +11,6 @@ public class GridPlacement
     public int ZooId { get; set; }
     public Zoo Zoo { get; set; }
 
-    public int? BuildingId { get; set; }
+    public int BuildingId { get; set; }
     public Building Building { get; set; }
 }

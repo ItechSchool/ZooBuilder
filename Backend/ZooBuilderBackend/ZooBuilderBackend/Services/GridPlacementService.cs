@@ -7,9 +7,9 @@ namespace ZooBuilderBackend.Services;
 public class GridPlacementService
 {
     private readonly ApplicationDbContext _db = new();
-    /// <summary>In this method a building gets placed on the city grid.</summary>
-    /// <summary>The method checks for certain things (money, spot where it should be placed, buildingId, and ZooId) and throws an exception when it fails.</summary>
-    /// <summary> Remember: Handle the exceptions when calling this method!</summary>
+    /// <summary>In this method a building gets placed on the city grid.
+    /// The method checks for certain things (money, spot where it should be placed, buildingId, and ZooId) and throws an exception when it fails.
+    ///  Remember: Handle exceptions when calling this method!</summary>
     public void PlaceBuilding(int buildingId, int x, int y, int zooId)
     {
         var building = _db.Building.Find(buildingId);

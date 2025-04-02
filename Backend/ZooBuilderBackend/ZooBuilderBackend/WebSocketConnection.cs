@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SharedNetwork;
+using SharedNetwork.Dtos;
+using ZooBuilderBackend.Services;
 
 namespace ZooBuilderBackend
 {
@@ -110,22 +112,46 @@ namespace ZooBuilderBackend
 
         private void Login(TcpClient client, string deviceId)
         {
-            //  do some backend stuff
-            //  retrieve data
+            var startUpService = new StartUpService();
+            var startUpDataDto = startUpService.LoadStartUpData(deviceId);
 
-            SendAccountInfo(client);
+            SendStartUpData(client, startUpDataDto);
+        }
+
+        private void SendStartUpData(TcpClient client, StartUpDataDto startUpDataDto)
+        {
+            foreach (var building in startUpDataDto.Buildings)
+            {
+                var buildingMessage = MessageBuilder.Call("LoadBuilding").AddParameter(building).Build();
+                NetworkUtils.TrySend(client.Client, buildingMessage);
+            }
+
+            foreach (var animal in startUpDataDto.Animals)
+            {
+                var animalMessage = MessageBuilder.Call("LoadAnimal").AddParameter(animal).Build();
+                NetworkUtils.TrySend(client.Client, animalMessage);
+            }
+
+            foreach (var gridPlacement in startUpDataDto.GridPlacements)
+            {
+                var gridPlacementMessage = MessageBuilder.Call("LoadGridPlacement").AddParameter(gridPlacement).Build();
+                NetworkUtils.TrySend(client.Client, gridPlacementMessage);
+            }
+
+            var zooMessage = MessageBuilder.Call("LoadGridPlacement").AddParameter(startUpDataDto.Zoo).Build();
+            NetworkUtils.TrySend(client.Client, zooMessage);
         }
 
         private void SendAccountInfo(TcpClient client)
         {
-            var data = new ExampleDto()
+            var message = $"CALL/SetZooName:Zoo #{new Random().Next(10000, 99999)}";
+            if (NetworkUtils.TrySend(client.Client, message) == false)
             {
-                ExampleInt = 1,
-                ExampleFloat = 4.263f,
-                ExampleString = "Hello you"
-            };
-            string message = MessageBuilder.Call("SendData").AddParameter(data).Build();
-            NetworkUtils.TrySend(client.Client, message);
+                if (client.Connected == false)
+                {
+                    connections.Remove(client);
+                }
+            }
         }
 
         private void BuyBuilding(TcpClient client, string clientId, int buildingId)
