@@ -46,6 +46,7 @@ jobs:
         working-directory: Backend/ZooBuilderBackend
         
   backend-test-coverage: # this one will be only informal
+    permissions: write-all
     runs-on: ubuntu-latest
     
     steps:
