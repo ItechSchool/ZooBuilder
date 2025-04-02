@@ -48,7 +48,7 @@ namespace ZooBuilderBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Animal");
+                    b.ToTable("Animal", (string)null);
 
                     b.HasData(
                         new
@@ -163,7 +163,7 @@ namespace ZooBuilderBackend.Migrations
 
                     b.HasIndex("AnimalId");
 
-                    b.ToTable("Building");
+                    b.ToTable("Building", (string)null);
 
                     b.HasData(
                         new
@@ -330,7 +330,7 @@ namespace ZooBuilderBackend.Migrations
                     b.Property<int>("AnimalCount")
                         .HasColumnType("integer");
 
-                    b.Property<int>("BuildingId")
+                    b.Property<int?>("BuildingId")
                         .HasColumnType("integer");
 
                     b.Property<bool>("Connected")
@@ -351,7 +351,7 @@ namespace ZooBuilderBackend.Migrations
 
                     b.HasIndex("ZooId");
 
-                    b.ToTable("GridPlacement");
+                    b.ToTable("GridPlacement", (string)null);
                 });
 
             modelBuilder.Entity("ZooBuilderBackend.Models.Player", b =>
@@ -368,7 +368,7 @@ namespace ZooBuilderBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Player");
+                    b.ToTable("Player", (string)null);
                 });
 
             modelBuilder.Entity("ZooBuilderBackend.Models.Zoo", b =>
@@ -378,9 +378,6 @@ namespace ZooBuilderBackend.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Meat")
-                        .HasColumnType("integer");
 
                     b.Property<int>("Money")
                         .HasColumnType("integer");
@@ -399,7 +396,7 @@ namespace ZooBuilderBackend.Migrations
 
                     b.HasIndex("PlayerId");
 
-                    b.ToTable("Zoo");
+                    b.ToTable("Zoo", (string)null);
                 });
 
             modelBuilder.Entity("ZooBuilderBackend.Models.Building", b =>
@@ -415,9 +412,7 @@ namespace ZooBuilderBackend.Migrations
                 {
                     b.HasOne("ZooBuilderBackend.Models.Building", "Building")
                         .WithMany()
-                        .HasForeignKey("BuildingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BuildingId");
 
                     b.HasOne("ZooBuilderBackend.Models.Zoo", "Zoo")
                         .WithMany("GridPlacements")
