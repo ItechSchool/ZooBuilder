@@ -40,39 +40,9 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Unity
-        uses: game-ci/unity-builder@v2
-        with:
-          version: 2022.3.21f1
-
-      - name: Test Playmode
-        uses: webbertaken/unity-test-runner@v2.0
-        with:
-          test_mode: playmode
-          unity_version: ${{ matrix.unityVersion }}
-          checkout: false
-          custom_parameters: -projectPath Frontend/ZooBuilder
-
-      - name: Upload results
-        uses: actions/upload-artifact@v2
-        with:
-          name: Playmode Test Results
-          path: path/to/test/results
-     
-
-      - name: Setup Unity
-        uses: webbertakken/unity-actions/setup@v2
-        with:
-          unityVersion: 2022.3.21f1
+      - name: Fail - No license
+        if: ${{ !startsWith(env.UNITY_LICENSE, '<') }}
+        run: exit 1
         working-directory: Frontend/ZooBuilder
-
-      - name: Test Unity
-        uses: webbertakken/unity-actions/test-runner@v2
-        with:
-          unityVersion: 2022.3.21f1
-          testMode: playmode
-          artifactsPath: results
-        working-directory: Frontend/ZooBuilder
+        
+      
