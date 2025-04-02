@@ -85,7 +85,7 @@ jobs:
            --results-directory "./TestResults" \
            /p:CollectCoverage=true \
            /p:CoverletOutput="./TestResults/coverage/coverage" \
-           /p:CoverletOutputFormat="lcov;cobertura" \
+           /p:CoverletOutputFormat=cobertura \
            /p:Threshold=50 \
            /p:ThresholdType=line \
            /p:ThresholdStat=minimum \
