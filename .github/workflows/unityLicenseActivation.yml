@@ -7,6 +7,11 @@ jobs:
     name: Request manual activation file
     runs-on: ubuntu-latest
     
+    permissions:
+      contents: read  # Lesezugriff auf Repository-Inhalte (wird von Aktionen häufig benötigt)
+      actions: write  # Schreibzugriff für Aktionen (optional)
+      id-token: write # Für OpenID Connect (optional, wenn nötig für deinen Fall)
+    
     steps:
       - uses: actions/checkout@v2
         
