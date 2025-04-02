@@ -28,6 +28,10 @@ jobs:
       - name: Build
         run: dotnet build --no-restore
         working-directory: Backend/ZooBuilderBackend
+
+      - name: Verify formatting
+        run: dotnet format --verify-no-changes
+        working-directory: Backend/ZooBuilderBackend
   
       - name: Verify test project exists
         run: ls -la Backend/ZooBuilderBackend/ZooBuilderBackend.Tests/
