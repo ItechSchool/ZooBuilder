@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZooBuilderBackend", "ZooBuilderBackend\ZooBuilderBackend.csproj", "{B5C0AA37-CFE0-40BD-BB78-D9F1AA35065D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedNetwork", "SharedNetwork\SharedNetwork.csproj", "{DFC4572F-22A6-4C6E-AB01-374E8F0B5024}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{B5C0AA37-CFE0-40BD-BB78-D9F1AA35065D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5C0AA37-CFE0-40BD-BB78-D9F1AA35065D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5C0AA37-CFE0-40BD-BB78-D9F1AA35065D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFC4572F-22A6-4C6E-AB01-374E8F0B5024}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFC4572F-22A6-4C6E-AB01-374E8F0B5024}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFC4572F-22A6-4C6E-AB01-374E8F0B5024}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFC4572F-22A6-4C6E-AB01-374E8F0B5024}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

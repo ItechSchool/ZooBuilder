@@ -1,7 +1,9 @@
 /Library
 /Temp
 *.sln
-UserSettings/
-Packages/
-Logs/
+/UserSettings
+/Logs
 /[B][b]uilds
+/obj
+/.idea
+*.csproj
