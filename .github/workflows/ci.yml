@@ -30,7 +30,12 @@ jobs:
         working-directory: Backend/ZooBuilderBackend
 
       - name: Verify formatting
-        run: dotnet format --verify-no-changes
+        run: |
+          echo "Verifying code formatting..."
+          # If dotnet format finds changes, exit with a custom message.
+          dotnet format --verify-no-changes || (
+            echo "please use 'dotnet format' to fix" && exit 1
+          )
         working-directory: Backend/ZooBuilderBackend
   
       - name: Verify test project exists
