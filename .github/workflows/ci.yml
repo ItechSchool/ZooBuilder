@@ -107,11 +107,11 @@ jobs:
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
+        working-directory: Backend/ZooBuilderBackend
+        if: always()
         with:
           name: coverage
           path: TestResults/coverage
-        working-directory: Backend/ZooBuilderBackend
-        if: always()
 
   frontend:
     permissions: write-all
