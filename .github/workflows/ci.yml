@@ -44,6 +44,41 @@ jobs:
       - name: Test
         run: dotnet test ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj --verbosity normal --logger:trx
         working-directory: Backend/ZooBuilderBackend
+        
+  backend-test-coverage: # this one will be only informal
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.401'
+
+      - name: Restore dependencies
+        run: dotnet restore
+        working-directory: Backend/ZooBuilderBackend 
+        
+      - name: Test with coverage
+        run: |
+          dotnet test \
+            ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj \
+            --verbosity normal --logger trx \
+            --collect "XPlat Code Coverage" \
+            --results-directory ./TestResults \
+            /p:CollectCoverage=true \
+            /p:CoverletOutput=TestResults/coverage/ \
+            /p:CoverletOutputFormat=lcov \
+            /p:Exclude="[xunit*]*"
+        working-directory: Backend/ZooBuilderBackend
+      
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage
+          path: Backend/ZooBuilderBackend/TestResults/coverage
   
   frontend:
     permissions: write-all
