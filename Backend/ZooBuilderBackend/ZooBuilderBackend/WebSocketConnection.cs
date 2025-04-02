@@ -122,7 +122,11 @@ namespace ZooBuilderBackend
             {
                 ExampleInt = 1,
                 ExampleFloat = 4.263f,
-                ExampleString = "Hello you"
+                OtherStruct = new OtherStruct()
+                {
+                    Id = 1,
+                    Value = 5.5f
+                }
             };
             string message = MessageBuilder.Call("SendData").AddParameter(data).Build();
             NetworkUtils.TrySend(client.Client, message);

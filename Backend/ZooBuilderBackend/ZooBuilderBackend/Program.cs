@@ -1,4 +1,5 @@
 ﻿using System;
+using SharedNetwork;
 
 namespace ZooBuilderBackend
 {
