@@ -83,7 +83,7 @@ jobs:
             --collect "XPlat Code Coverage" \
             --results-directory "./TestResults" \
             /p:CollectCoverage=true \
-            /p:CoverletOutput="./TestResults/coverage/coverage" \
+            /p:CoverletOutput="./TestResults/coverage/fixed/coverage" \
             /p:CoverletOutputFormat=cobertura \
             /p:Threshold=50 \
             /p:ThresholdType=line \
@@ -99,7 +99,7 @@ jobs:
         working-directory: Backend/ZooBuilderBackend
         run: |
           reportgenerator \
-            -reports:TestResults/coverage/coverage.cobertura.xml \
+            -reports:TestResults/coverage/fixed/coverage.cobertura.xml \
             -targetdir:TestResults/coverage/html \
             -reporttypes:TextSummary
           echo "Coverage summary:"
@@ -110,7 +110,7 @@ jobs:
         if: always()
         with:
           name: coverage
-          path: Backend/ZooBuilderBackend/TestResults/coverage
+          path: Backend/ZooBuilderBackend/TestResults/coverage/fixed \
 
   frontend:
     permissions: write-all
