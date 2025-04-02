@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SharedNetwork;
 
 namespace ZooBuilderBackend
 {
@@ -12,11 +13,14 @@ namespace ZooBuilderBackend
         private List<TcpClient> connections = new List<TcpClient>();
 
         private bool isActive = true;
+        private int pingIntervall = 2000;
         public WebSocketConnection(string ip, int port)
         {
             var server = new TcpListener(IPAddress.Parse(ip), port);
             server.Start();
             Console.WriteLine($"Server started on {ip}:{port}");
+            var lifeStatusThread = new Thread(PingClients) { IsBackground = true };
+            lifeStatusThread.Start();
             AcceptClient(server);
             BroadcastTime();
         }
@@ -27,40 +31,65 @@ namespace ZooBuilderBackend
             {
                 var client = await server.AcceptTcpClientAsync();
                 connections.Add(client);
-                SendAccountInfo(client);
                 Console.WriteLine($"Client connected");
+                var clientThread = new Thread(() => ReceiveMessagesFromClient(client))
+                {
+                    IsBackground = true
+                };
+                clientThread.Start();
             }
         }
 
-        protected bool TrySendMessageToClient(TcpClient client, string message)
+        private void PingClients()
         {
-            var bytes = Encoding.UTF8.GetBytes(message);
-            try
+            while (isActive)
             {
-                client.Client.Send(bytes);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
+                var disconnectedClients = new List<TcpClient>();
+                foreach (var client in connections)
+                {
+                    try
+                    {
+                        client.Client.Send(Array.Empty<byte>());
+                    }
+                    catch
+                    {
+                        disconnectedClients.Add(client);
+                    }
+                }
+
+                connections.RemoveAll(client => disconnectedClients.Contains(client));
+                Thread.Sleep(pingIntervall);
             }
         }
         
+        private void ReceiveMessagesFromClient(TcpClient client)
+        {
+            while (connections.Contains(client))
+            {
+                var bytes = new byte[1024];
+                try
+                {
+                    client.Client.Receive(bytes);
+                }
+                catch
+                {
+                    break;
+                }
+                NetworkUtils.ReadMessage(this, bytes, client);
+            }
+            client.Dispose();
+        }
+
         async Task BroadcastTime()
         {
             int counter = 0;
             var disconnectedClients = new List<TcpClient>();
             while (isActive)
             {
-                var message = $"CALL/Print:Hello, I called you!:{counter}";
-                var bytes = Encoding.UTF8.GetBytes(message);
+                string message = MessageBuilder.Call("Print").AddParameter("Hello, I called you!", counter).Build();
                 foreach (var client in connections)
                 {
-                    try
-                    {
-                        client.Client.Send(bytes);
-                    }
-                    catch (Exception ex)
+                    if (await NetworkUtils.TrySendAsync(client.Client, message) == false)
                     {
                         if (client.Connected == false)
                         {
@@ -68,7 +97,7 @@ namespace ZooBuilderBackend
                         }
                     }
                 }
-                Thread.Sleep(10000);
+                Thread.Sleep(3000);
                 counter++;
             }
 
@@ -78,11 +107,19 @@ namespace ZooBuilderBackend
                 client.Dispose();
             }
         }
+
+        private void Login(TcpClient client, string deviceId)
+        {
+            //  do some backend stuff
+            //  retrieve data
+
+            SendAccountInfo(client);
+        }
         
         private void SendAccountInfo(TcpClient client)
         {
             var message = $"CALL/SetZooName:Zoo #{new Random().Next(10000, 99999)}";
-            if (TrySendMessageToClient(client, message) == false)
+            if (NetworkUtils.TrySend(client.Client, message) == false)
             {
                 if (client.Connected == false)
                 {
@@ -91,39 +128,9 @@ namespace ZooBuilderBackend
             }
         }
         
-        
-        private void ReadMessage(string message)
+        private void BuyBuilding(TcpClient client, string clientId, int buildingId)
         {
-            if (message.Length < 3) return;
-            string command = message.Substring(0, message.IndexOf("/"));
-            string[] arguments = message.Substring(command.Length + 1, message.Length - command.Length - 1).Split(":");
-            switch (command)
-            {
-                case "CALL":
-                    string methodName = arguments[0];
-                    var method = typeof(WebSocketConnection).GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance);
-                    if (method == null)
-                        break;
-                    var expectedArguments = method.GetParameters();
-                    var args = new List<object>();
-                    for (var i = 0; i < expectedArguments.Length; i++)
-                    {
-                        var expectedArgument = i < expectedArguments.Length ? expectedArguments[i] : null;
-                        string argument = arguments[i + 1];
-                        try
-                        {
-                            args.Add(Convert.ChangeType(argument, expectedArgument.ParameterType));
-                        }
-                        catch
-                        {
-                            args.Add(null);
-                        }
-                    }
-                    method.Invoke(this, args.ToArray());
-                    break;
-                default:
-                    break;
-            }
+            Console.WriteLine($"Client with id: {clientId} bought building {buildingId}");
         }
     }
 }

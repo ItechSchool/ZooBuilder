@@ -934,8 +934,8 @@ MonoBehaviour:
   _sensitivity: 0.03
   _minZoom: 5
   _maxZoom: 25
-  _zoomSensitivity: 5
-  _zoomSmoothing: 3
+  _zoomSensitivity: 0.3
+  _zoomSmoothing: 8
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

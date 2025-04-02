@@ -1,6 +1,8 @@
 /.idea
 /ZooBuilderBackend/bin
 /ZooBuilderBackend/obj
+/SharedNetwork/bin
+/SharedNetwork/obj
 /obj
 /bin
 /SharedNetwork/obj

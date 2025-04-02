@@ -18,6 +18,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="libs\" />
       <Folder Include="Migrations\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="SharedNetwork">
+        <HintPath>libs\SharedNetwork.dll</HintPath>
+      </Reference>
     </ItemGroup>
 </Project>
