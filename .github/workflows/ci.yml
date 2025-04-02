@@ -75,6 +75,7 @@ jobs:
         working-directory: Backend/ZooBuilderBackend
 
       - name: Test with coverage (will fail if <50%)
+        working-directory: Backend/ZooBuilderBackend
         run: |
           dotnet test \
            ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj \
@@ -89,28 +90,27 @@ jobs:
            /p:ThresholdType=line \
            /p:ThresholdStat=minimum \
            /p:Exclude="[xunit*]*"
-          working-directory: Backend/ZooBuilderBackend
   
-          - name: Install ReportGenerator
-            if: success()
-            run: dotnet tool install --global dotnet-reportgenerator-globaltool
-  
-          - name: Generate & print coverage summary
-            if: success()
-            run: |
-              reportgenerator \
-                -reports:Backend/ZooBuilderBackend/TestResults/coverage/coverage.cobertura.xml \
-                -targetdir:Backend/ZooBuilderBackend/TestResults/coverage/html \
-                -reporttypes:TextSummary
-              echo "Coverage summary:"
-              cat Backend/ZooBuilderBackend/TestResults/coverage/html/Summary.txt
-  
-          - name: Upload coverage artifact
-            if: always() # still upload if coverage threshold fails
-            uses: actions/upload-artifact@v4
-            with:
-              name: coverage
-              path: Backend/ZooBuilderBackend/TestResults/coverage
+      - name: Install ReportGenerator
+        if: success()
+        run: dotnet tool install --global dotnet-reportgenerator-globaltool
+
+      - name: Generate & print coverage summary
+        if: success()
+        run: |
+          reportgenerator \
+            -reports:Backend/ZooBuilderBackend/TestResults/coverage/coverage.cobertura.xml \
+            -targetdir:Backend/ZooBuilderBackend/TestResults/coverage/html \
+            -reporttypes:TextSummary
+          echo "Coverage summary:"
+          cat Backend/ZooBuilderBackend/TestResults/coverage/html/Summary.txt
+
+      - name: Upload coverage artifact
+        if: always() # still upload if coverage threshold fails
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: Backend/ZooBuilderBackend/TestResults/coverage
   
   frontend:
     permissions: write-all
