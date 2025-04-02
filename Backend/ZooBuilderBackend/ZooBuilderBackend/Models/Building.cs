@@ -10,7 +10,7 @@ public class Building
     public int Costs { get; set; }
     public int Capacity { get; set; }
     public int MaxRevenue { get; set; }
-    
+
     public int? AnimalId { get; set; }
     public Animal? Animal { get; set; }
 }

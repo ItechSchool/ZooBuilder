@@ -5,7 +5,7 @@ namespace SharedNetwork
         public int ExampleInt;
         public string ExampleString;
         public float ExampleFloat;
-        
+
         public void FromString(string dataString)
         {
             string cleanedString = dataString.Replace("{", string.Empty).Replace("}", string.Empty);

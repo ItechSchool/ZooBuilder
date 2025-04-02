@@ -73,7 +73,7 @@ namespace SharedNetwork
                             }
                             else
                             {
-                                args.Add(Convert.ChangeType(argument, expectedArgument.ParameterType));    
+                                args.Add(Convert.ChangeType(argument, expectedArgument.ParameterType));
                             }
                         }
                         catch

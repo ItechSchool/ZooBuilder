@@ -61,7 +61,7 @@ namespace ZooBuilderBackend
                 Thread.Sleep(pingIntervall);
             }
         }
-        
+
         private void ReceiveMessagesFromClient(TcpClient client)
         {
             while (connections.Contains(client))
@@ -115,7 +115,7 @@ namespace ZooBuilderBackend
 
             SendAccountInfo(client);
         }
-        
+
         private void SendAccountInfo(TcpClient client)
         {
             var data = new ExampleDto()
