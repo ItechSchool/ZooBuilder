@@ -74,21 +74,20 @@ jobs:
         run: dotnet restore
 
       - name: Test with coverage (will fail if <50%)
+      - name: Run Tests and Collect Coverage
         working-directory: Backend/ZooBuilderBackend
         run: |
           dotnet test \
             ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj \
             --verbosity normal \
             --logger "trx;LogFileName=test-results.trx" \
-            --collect "XPlat Code Coverage" \
             --results-directory "./TestResults" \
             /p:CollectCoverage=true \
-            /p:CoverletOutput="./TestResults/coverage/fixed/coverage" \
-            /p:CoverletOutputFormat=cobertura \
+            /p:CoverletOutput="./TestResults/coverage/" \
+            /p:CoverletOutputFormat="cobertura" \
             /p:Threshold=50 \
             /p:ThresholdType=line \
-            /p:ThresholdStat=minimum \
-#            /p:Exclude="[xunit*]*"
+            /p:ThresholdStat=minimum
 
   frontend:
     permissions: write-all
