@@ -11,7 +11,7 @@ public class PlayerService(ApplicationDbContext context)
         {
             throw new ArgumentException("Missing Device Id");
         }
-        
+
         var player = context.Player.SingleOrDefault(b => b.DeviceId == deviceId);
 
         return player ?? CreatePlayer(deviceId);
@@ -20,11 +20,11 @@ public class PlayerService(ApplicationDbContext context)
     private Player CreatePlayer(string deviceId)
     {
         var player = new Player { DeviceId = deviceId };
-        
-        
+
+
         context.Player.Add(player);
         context.SaveChanges();
-        
+
         var zoo = new Zoo
         {
             Money = 100,
@@ -34,7 +34,7 @@ public class PlayerService(ApplicationDbContext context)
         };
         context.Zoo.Add(zoo);
         context.SaveChanges();
-        
+
         return player;
     }
 }
