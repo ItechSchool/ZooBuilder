@@ -14,20 +14,12 @@ namespace SharedNetwork.Dtos
 
         public void FromString(string dataString)
         {
-            string cleanedString = dataString.Replace("{", string.Empty).Replace("}", string.Empty);
-            string[] values = cleanedString.Split(';');
-
-            Id = int.Parse(values[0]);
-            Species = values[1];
-            Costs = int.Parse(values[2]);
-            Diet = values[3];
-            Attraction = int.Parse(values[4]);
-            Hunger = int.Parse(values[5]);
+            this = StringSerializer.Deserialize<AnimalDto>(dataString);
         }
 
         public override string ToString()
         {
-            return "{" + Id + ";" + Species + ";" + Costs + ";" + Diet + ";" + Attraction + ";" + Hunger + "}";
+            return StringSerializer.Serialize(this);
         }
     }
 }

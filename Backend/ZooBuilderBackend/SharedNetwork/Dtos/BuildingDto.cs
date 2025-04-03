@@ -17,26 +17,12 @@ namespace SharedNetwork.Dtos
 
         public void FromString(string dataString)
         {
-            string cleanedString = dataString.Replace("{", string.Empty).Replace("}", string.Empty);
-            string[] values = cleanedString.Split(';');
-
-            Id = int.Parse(values[0]);
-            Name = values[1];
-            Type = values[2];
-            SizeWidth = int.Parse(values[3]);
-            SizeHeight = int.Parse(values[4]);
-            Costs = int.Parse(values[5]);
-            Capacity = int.Parse(values[6]);
-            MaxRevenue = int.Parse(values[7]);
-            AnimalId = values[8] != "null" ? int.Parse(values[8]) : (int?)null;
+            this = StringSerializer.Deserialize<BuildingDto>(dataString);
         }
 
         public override string ToString()
         {
-            return "{" + Id + ";" + Name + ";" + Type + ";" +
-                   SizeWidth + ";" + SizeHeight + ";" + Costs + ";" +
-                   Capacity + ";" + MaxRevenue + ";" +
-                   (AnimalId.HasValue ? AnimalId.ToString() : "null") + "}";
+            return StringSerializer.Serialize(this);
         }
     }
 }
