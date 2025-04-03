@@ -53,6 +53,7 @@ public class ConnectionHandler : MonoBehaviour
             {
                 if (result.IsCompleted)
                 {
+                    Debug.Log(Encoding.UTF8.GetString(bytes));
                     NetworkUtils.ReadMessage(this, bytes);
                 }
             }, null);

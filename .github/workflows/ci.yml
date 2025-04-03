@@ -1,17 +1,17 @@
 name: CI
 
-on: 
+on:
   push:
     branches:
       - main
-  pull_request: 
+  pull_request:
     branches:
       - main
 
 jobs:
-  backend:
+  backend-tests:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -22,33 +22,93 @@ jobs:
           dotnet-version: '8.0.401'
 
       - name: Restore dependencies
-        run: dotnet restore
         working-directory: Backend/ZooBuilderBackend
+        run: dotnet restore
 
       - name: Build
+        working-directory: Backend/ZooBuilderBackend
         run: dotnet build --no-restore
-        working-directory: Backend/ZooBuilderBackend
-
-      - name: Verify formatting
-        run: |
-          echo "Verifying code formatting..."
-          # If dotnet format finds changes, exit with a custom message.
-          dotnet format --verify-no-changes || (
-            echo "please use 'dotnet format' to fix" && exit 1
-          )
-        working-directory: Backend/ZooBuilderBackend
-  
+        
       - name: Verify test project exists
         run: ls -la Backend/ZooBuilderBackend/ZooBuilderBackend.Tests/
 
       - name: Test
-        run: dotnet test ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj --verbosity normal --logger:trx
         working-directory: Backend/ZooBuilderBackend
+        run: |
+          dotnet test \
+            ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj \
+            --verbosity normal \
+            --logger "trx;LogFileName=test-results.trx" \
+            --results-directory "./TestResults"
+
+      - name: Upload test results (TRX)
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results
+          path: Backend/ZooBuilderBackend/TestResults/test-results.trx
   
+  backend-verify-formatting:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.401'
+
+    - name: Restore dependencies
+      working-directory: Backend/ZooBuilderBackend
+      run: dotnet restore
+
+    - name: Build
+      working-directory: Backend/ZooBuilderBackend
+      run: dotnet build --no-restore
+
+    - name: Verify formatting
+      working-directory: Backend/ZooBuilderBackend
+      run: |
+        echo "Verifying code formatting..."
+        # If dotnet format finds changes, exit with a custom message.
+        dotnet format --verify-no-changes || (
+          echo "please use 'dotnet format' to fix" && exit 1
+        )
+  
+  backend-test-coverage:
+    permissions: write-all
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.401'
+
+      - name: Restore dependencies
+        working-directory: Backend/ZooBuilderBackend
+        run: dotnet restore
+
+      - name: Test with coverage (will fail if <50%)
+        working-directory: Backend/ZooBuilderBackend
+        run: |
+          dotnet test \
+            ZooBuilderBackend.Tests/ZooBuilderBackend.Tests.csproj \
+            --verbosity normal \
+            --logger "trx;LogFileName=test-results.trx" \
+            --results-directory "./TestResults" \
+            /p:CollectCoverage=true \
+            /p:CoverletOutput="./TestResults/coverage/" \
+            /p:CoverletOutputFormat="cobertura" \
+            /p:Threshold=50 \
+            /p:ThresholdType=line \
+            /p:ThresholdStat=minimum
+
   frontend:
     permissions: write-all
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -63,5 +123,3 @@ jobs:
           projectPath: Frontend/ZooBuilder
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           unityVersion: 2022.3.21f1
-        
-      
