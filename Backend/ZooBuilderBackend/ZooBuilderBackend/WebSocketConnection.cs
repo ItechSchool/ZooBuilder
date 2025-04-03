@@ -168,7 +168,7 @@ namespace ZooBuilderBackend
             NetworkUtils.TrySend(client.Client, zooMessage);
             Console.WriteLine("Finished sending data");
         }
-        
+
         private void BuyBuilding(TcpClient client, string clientId, int buildingId)
         {
             Console.WriteLine($"Client with id: {clientId} bought building {buildingId}");

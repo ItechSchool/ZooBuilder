@@ -17,7 +17,7 @@ public class StartUpService(ApplicationDbContext context)
             throw new ArgumentException("Could not find Player with deviceId " + deviceId);
         }
         var player = context.Player.First(p => p.DeviceId == deviceId);
-        
+
         if (context.Zoo.Any(z => z.PlayerId == player.Id) == false)
         {
             throw new ArgumentException("Could not find an existing Zoo for Player with id " + player.Id);
@@ -46,7 +46,7 @@ public class StartUpService(ApplicationDbContext context)
             MaxRevenue = b.MaxRevenue,
             AnimalId = b.AnimalId
         }).ToArray();
-        
+
         var animalDtos = context.Animal.Select(a => new AnimalDto
         {
             Id = a.Id,

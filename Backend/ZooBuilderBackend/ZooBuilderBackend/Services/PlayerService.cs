@@ -15,7 +15,7 @@ public class PlayerService(ApplicationDbContext context)
         }
 
         Console.WriteLine(deviceId);
-        
+
         // Regex pattern to match non-printable characters
         var regex = new Regex(@"[^\x20-\x7E]");
 
@@ -27,7 +27,7 @@ public class PlayerService(ApplicationDbContext context)
         {
             Console.WriteLine("The string does not contain non-printable characters.");
         }
-        
+
         var player = context.Player.FirstOrDefault(b => b.DeviceId == deviceId);
 
         return player ?? CreatePlayer(deviceId);

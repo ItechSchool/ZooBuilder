@@ -111,7 +111,7 @@ namespace SharedNetwork
                     break;
             }
         }
-        
+
         public static string RemoveNonPrintableCharacters(string input)
         {
             if (string.IsNullOrEmpty(input))
