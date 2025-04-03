@@ -1,7 +1,4 @@
-﻿using System;
-using SharedNetwork;
-
-namespace ZooBuilderBackend
+﻿namespace ZooBuilderBackend
 {
     internal class Program
     {

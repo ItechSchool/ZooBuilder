@@ -14,7 +14,7 @@ namespace SharedNetwork
             AddObjectsToList(values, cleanedString.Split(";"));
             var properties = typeof(T).GetProperties();
             object instance = new T();
-            
+
             for (var i = 0; i < properties.Length; i++)
             {
                 var property = properties[i];
@@ -22,7 +22,7 @@ namespace SharedNetwork
                 {
                     var method = typeof(StringSerializer).GetMethod(nameof(Deserialize), BindingFlags.Static | BindingFlags.Public);
                     var genericMethod = method.MakeGenericMethod(property.PropertyType);
-                    property.SetValue(instance, genericMethod.Invoke(null, new object[] {values[i]}));
+                    property.SetValue(instance, genericMethod.Invoke(null, new object[] { values[i] }));
                 }
                 else
                 {
@@ -49,7 +49,7 @@ namespace SharedNetwork
 
             return dataString + "}";
         }
-        
+
         private static int AddObjectsToList(List<string> objects, string[] dataStrings)
         {
             var index = 0;

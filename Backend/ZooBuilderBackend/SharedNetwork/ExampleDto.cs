@@ -4,7 +4,7 @@ namespace SharedNetwork
     {
         public int Id { get; set; }
         public float Value { get; set; }
-        
+
         public void FromString(string dataString)
         {
             var copy = StringSerializer.Deserialize<OtherStruct>(dataString);
@@ -17,13 +17,13 @@ namespace SharedNetwork
             return StringSerializer.Serialize(this);
         }
     }
-    
+
     public struct ExampleDto : IStringSerializable
     {
         public int ExampleInt { get; set; }
         public OtherStruct OtherStruct { get; set; }
         public float ExampleFloat { get; set; }
-        
+
         public void FromString(string dataString)
         {
             var copy = StringSerializer.Deserialize<ExampleDto>(dataString);
