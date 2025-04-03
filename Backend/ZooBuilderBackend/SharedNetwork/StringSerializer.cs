@@ -9,10 +9,9 @@ namespace SharedNetwork
     {
         public static T Deserialize<T>(string dataString) where T : struct
         {
-            var entries = new List<string>();
+            var values = new List<string>();
             string cleanedString = dataString.Substring(1, dataString.Length - 2);
-            AddObjectsToList(entries, cleanedString.Split(";"));
-            string[] values = entries.ToArray();
+            AddObjectsToList(values, cleanedString.Split(";"));
             var properties = typeof(T).GetProperties();
             object instance = new T();
             
