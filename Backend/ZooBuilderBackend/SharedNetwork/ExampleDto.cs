@@ -1,23 +1,40 @@
 namespace SharedNetwork
 {
-    public struct ExampleDto : IStringSerializable
+    public struct OtherStruct : IStringSerializable
     {
-        public int ExampleInt;
-        public string ExampleString;
-        public float ExampleFloat;
+        public int Id { get; set; }
+        public float Value { get; set; }
 
         public void FromString(string dataString)
         {
-            string cleanedString = dataString.Replace("{", string.Empty).Replace("}", string.Empty);
-            string[] values = cleanedString.Split(';');
-            ExampleInt = int.Parse(values[0]);
-            ExampleString = values[1];
-            ExampleFloat = float.Parse(values[2].Replace(",", "."));
+            var copy = StringSerializer.Deserialize<OtherStruct>(dataString);
+            Id = copy.Id;
+            Value = copy.Value;
         }
 
         public override string ToString()
         {
-            return "{" + ExampleInt + ";" + ExampleString + ";" + ExampleFloat + "}";
+            return StringSerializer.Serialize(this);
+        }
+    }
+
+    public struct ExampleDto : IStringSerializable
+    {
+        public int ExampleInt { get; set; }
+        public OtherStruct OtherStruct { get; set; }
+        public float ExampleFloat { get; set; }
+
+        public void FromString(string dataString)
+        {
+            var copy = StringSerializer.Deserialize<ExampleDto>(dataString);
+            ExampleInt = copy.ExampleInt;
+            OtherStruct = copy.OtherStruct;
+            ExampleFloat = copy.ExampleFloat;
+        }
+
+        public override string ToString()
+        {
+            return StringSerializer.Serialize(this);
         }
     }
 }
