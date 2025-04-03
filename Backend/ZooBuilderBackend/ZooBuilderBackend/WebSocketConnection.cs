@@ -1,18 +1,18 @@
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using SharedNetwork;
 using SharedNetwork.Dtos;
+using ZooBuilderBackend.Data;
 using ZooBuilderBackend.Services;
 
 namespace ZooBuilderBackend
 {
     public class WebSocketConnection
     {
-        private List<TcpClient> connections = new List<TcpClient>();
+        private List<TcpClient> connections = new();
+        private static readonly ApplicationDbContext Db = new();
+        private readonly StartUpService _startUpService = new(Db);
+        private readonly PlayerService _playerService = new(Db);
 
         private bool isActive = true;
         private int pingIntervall = 2000;
@@ -112,8 +112,15 @@ namespace ZooBuilderBackend
 
         private void Login(TcpClient client, string deviceId)
         {
-            var startUpService = new StartUpService();
-            var startUpDataDto = startUpService.LoadStartUpData(deviceId);
+            try
+            {
+                _playerService.Login(deviceId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error in the login process " + e.Message);
+            }
+            var startUpDataDto = _startUpService.LoadStartUpData(deviceId);
 
             SendStartUpData(client, startUpDataDto);
         }
