@@ -48,30 +48,33 @@ jobs:
           path: Backend/ZooBuilderBackend/TestResults/test-results.trx
   
   backend-verify-formatting:
-    - name: Checkout
-      uses: actions/checkout@v2
+    runs-on: ubuntu-latest
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '8.0.401'
-
-    - name: Restore dependencies
-      working-directory: Backend/ZooBuilderBackend
-      run: dotnet restore
-
-    - name: Build
-      working-directory: Backend/ZooBuilderBackend
-      run: dotnet build --no-restore
-
-    - name: Verify formatting
-      working-directory: Backend/ZooBuilderBackend
-      run: |
-        echo "Verifying code formatting..."
-        # If dotnet format finds changes, exit with a custom message.
-        dotnet format --verify-no-changes || (
-          echo "please use 'dotnet format' to fix" && exit 1
-        )
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+  
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.401'
+  
+      - name: Restore dependencies
+        working-directory: Backend/ZooBuilderBackend
+        run: dotnet restore
+  
+      - name: Build
+        working-directory: Backend/ZooBuilderBackend
+        run: dotnet build --no-restore
+  
+      - name: Verify formatting
+        working-directory: Backend/ZooBuilderBackend
+        run: |
+          echo "Verifying code formatting..."
+          # If dotnet format finds changes, exit with a custom message.
+          dotnet format --verify-no-changes || (
+            echo "please use 'dotnet format' to fix" && exit 1
+          )
   
   backend-test-coverage:
     permissions: write-all
