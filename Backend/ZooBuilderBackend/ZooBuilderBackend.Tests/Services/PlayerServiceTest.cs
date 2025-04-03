@@ -19,7 +19,7 @@ namespace ZooBuilderBackend.Tests.Services
             var service = new PlayerService(mockContext.Object);
 
             // Act & Assert
-            var exception = Assert.Throws<Exception>(() => service.CreatePlayer(null));
+            var exception = Assert.Throws<ArgumentException>(() => service.Login(null));
             Assert.Equal("Missing Device Id", exception.Message);
         }
     }
