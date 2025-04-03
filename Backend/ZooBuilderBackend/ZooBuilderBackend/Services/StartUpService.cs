@@ -12,17 +12,17 @@ public class StartUpService(ApplicationDbContext context)
     /// Remember: Handle exceptions when calling this method!</summary>
     public StartUpDataDto LoadStartUpData(string deviceId)
     {
-        var player = context.Player.SingleOrDefault(p => p.DeviceId == deviceId);
-        if (player == null)
+        if (context.Player.Any(p => p.DeviceId == deviceId) == false)
         {
-            throw new Exception("Could not find Player with deviceId " + deviceId);
+            throw new ArgumentException("Could not find Player with deviceId " + deviceId);
         }
-
-        var zoo = context.Zoo.SingleOrDefault(z => z.PlayerId == player.Id);
-        if (zoo == null)
+        var player = context.Player.First(p => p.DeviceId == deviceId);
+        
+        if (context.Zoo.Any(z => z.PlayerId == player.Id) == false)
         {
-            throw new Exception("Could not find an existing Zoo for Player with id " + player.Id);
+            throw new ArgumentException("Could not find an existing Zoo for Player with id " + player.Id);
         }
+        var zoo = context.Zoo.First(z => z.PlayerId == player.Id);
 
         var zooDto = new ZooDto
         {
@@ -46,7 +46,7 @@ public class StartUpService(ApplicationDbContext context)
             MaxRevenue = b.MaxRevenue,
             AnimalId = b.AnimalId
         }).ToArray();
-
+        
         var animalDtos = context.Animal.Select(a => new AnimalDto
         {
             Id = a.Id,

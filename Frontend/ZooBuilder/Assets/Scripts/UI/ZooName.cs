@@ -3,16 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ZooName : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _nameText;
+    [SerializeField] private TextMeshProUGUI nameText;
 
     private string _currentText;
 
     private void Start()
     {
-        ConnectionHandler.Instance.ZooNameUpdated += zooName => _currentText = zooName;
+        ConnectionHandler.Instance.ZooInfoUpdated += zooInfo => _currentText = zooInfo.Name;
     }
 
     private void Update()
@@ -22,7 +23,7 @@ public class ZooName : MonoBehaviour
             _currentText = "Connecting ...";
         }
 
-        if (_nameText.text != _currentText)
+        if (nameText.text != _currentText)
         {
             SetZooNameText(_currentText);
         }
@@ -30,8 +31,8 @@ public class ZooName : MonoBehaviour
 
     private void SetZooNameText(string text)
     {
-        _nameText.text = text;
-        var width = _nameText.GetPreferredValues(text).x;
-        _nameText.rectTransform.sizeDelta = new Vector2(width, _nameText.rectTransform.sizeDelta.y);
+        nameText.text = text;
+        var width = nameText.GetPreferredValues(text).x;
+        nameText.rectTransform.sizeDelta = new Vector2(width, nameText.rectTransform.sizeDelta.y);
     }
 }

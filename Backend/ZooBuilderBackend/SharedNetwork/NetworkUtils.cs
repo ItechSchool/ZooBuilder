@@ -12,7 +12,8 @@ namespace SharedNetwork
     {
         public static bool TrySend(Socket socket, string message)
         {
-            var bytes = Encoding.UTF8.GetBytes(message);
+            if (message.Length < 3) return false;
+            byte[] bytes = Encoding.UTF8.GetBytes(message);
             try
             {
                 socket.Send(bytes);
@@ -26,6 +27,7 @@ namespace SharedNetwork
 
         public static async Task<bool> TrySendAsync(Socket socket, string message)
         {
+            if (message.Length < 3) return false;
             byte[] bytes = Encoding.UTF8.GetBytes(message);
             try
             {
@@ -38,14 +40,37 @@ namespace SharedNetwork
             }
         }
 
+        public static void ReadBuffer(List<byte> buffer, byte[] newBytes, Queue<string> messageQueue)
+        {
+            string message = Encoding.UTF8.GetString(newBytes);
+            if (buffer.Count > 0)
+            {
+                message = Encoding.UTF8.GetString(buffer.ToArray()) + message;
+            }
+            if (message.Contains("\\s") == false)
+            {
+                buffer.AddRange(newBytes);
+                return;
+            }
+            buffer.Clear();
+            while (message.Contains("\\s"))
+            {
+                string request = message.Split("\\s")[0];
+                messageQueue.Enqueue(request);
+                message = message[(request.Length + 2)..];
+            }
+            buffer.AddRange(Encoding.UTF8.GetBytes(message));
+        }
+
         public static void ReadMessage<T>(T caller, byte[] bytes, params object[] additionalArgs)
         {
-            string message = Encoding.UTF8.GetString(bytes);
+            string message = RemoveNonPrintableCharacters(Encoding.UTF8.GetString(bytes));
             ReadMessage(caller, message, additionalArgs);
         }
 
         public static void ReadMessage<T>(T caller, string message, params object[] additionalArgs)
         {
+            message = RemoveNonPrintableCharacters(message);
             if (message.Length < 3 || message.Contains("/") == false) return;
             string command = message.Substring(0, message.IndexOf("/"));
             string[] arguments = message.Substring(command.Length + 1, message.Length - command.Length - 1).Split(":");
@@ -85,6 +110,26 @@ namespace SharedNetwork
                 default:
                     break;
             }
+        }
+        
+        public static string RemoveNonPrintableCharacters(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            StringBuilder builder = new StringBuilder();
+
+            foreach (char c in input)
+            {
+                // Keep only characters that are not control characters
+                // Alternatively: (c >= 32 && c <= 126) for printable ASCII
+                if (!char.IsControl(c))
+                {
+                    builder.Append(c);
+                }
+            }
+
+            return builder.ToString();
         }
     }
 }

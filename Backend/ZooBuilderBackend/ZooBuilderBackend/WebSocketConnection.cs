@@ -1,5 +1,9 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using SharedNetwork;
 using SharedNetwork.Dtos;
 using ZooBuilderBackend.Data;
@@ -16,6 +20,9 @@ namespace ZooBuilderBackend
 
         private bool isActive = true;
         private int pingIntervall = 2000;
+
+        private List<byte> _buffer = [];
+        private Queue<string> _messageQueue = new();
         public WebSocketConnection(string ip, int port)
         {
             var server = new TcpListener(IPAddress.Parse(ip), port);
@@ -72,18 +79,24 @@ namespace ZooBuilderBackend
                 try
                 {
                     client.Client.Receive(bytes);
+                    NetworkUtils.ReadBuffer(_buffer, bytes, _messageQueue);
                 }
                 catch
                 {
                     break;
                 }
-                NetworkUtils.ReadMessage(this, bytes, client);
+
+                while (_messageQueue.Count > 0)
+                {
+                    NetworkUtils.ReadMessage(this, _messageQueue.Dequeue(), client);
+                }
             }
             client.Dispose();
         }
 
         async Task BroadcastTime()
         {
+            return;
             int counter = 0;
             var disconnectedClients = new List<TcpClient>();
             while (isActive)
@@ -115,14 +128,20 @@ namespace ZooBuilderBackend
             try
             {
                 _playerService.Login(deviceId);
+                var startUpDataDto = _startUpService.LoadStartUpData(deviceId);
+                SendStartUpData(client, startUpDataDto);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine("Error in the login process " + e.Message);
+                Console.WriteLine(ex);
+                SendException(client, ex.Message.Replace(":", ";"));
             }
-            var startUpDataDto = _startUpService.LoadStartUpData(deviceId);
+        }
 
-            SendStartUpData(client, startUpDataDto);
+        private void SendException(TcpClient client, string message)
+        {
+            string request = MessageBuilder.Call("Exception").AddParameter(message).Build();
+            NetworkUtils.TrySend(client.Client, request);
         }
 
         private void SendStartUpData(TcpClient client, StartUpDataDto startUpDataDto)
@@ -147,14 +166,9 @@ namespace ZooBuilderBackend
 
             var zooMessage = MessageBuilder.Call("LoadZoo").AddParameter(startUpDataDto.Zoo).Build();
             NetworkUtils.TrySend(client.Client, zooMessage);
+            Console.WriteLine("Finished sending data");
         }
-
-        private void SendAccountInfo(TcpClient client)
-        {
-            string message = MessageBuilder.Call("SendData").Build();
-            NetworkUtils.TrySend(client.Client, message);
-        }
-
+        
         private void BuyBuilding(TcpClient client, string clientId, int buildingId)
         {
             Console.WriteLine($"Client with id: {clientId} bought building {buildingId}");
