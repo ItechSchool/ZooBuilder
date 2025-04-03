@@ -138,23 +138,13 @@ namespace ZooBuilderBackend
                 NetworkUtils.TrySend(client.Client, gridPlacementMessage);
             }
 
-            var zooMessage = MessageBuilder.Call("LoadGridPlacement").AddParameter(startUpDataDto.Zoo).Build();
+            var zooMessage = MessageBuilder.Call("LoadZoo").AddParameter(startUpDataDto.Zoo).Build();
             NetworkUtils.TrySend(client.Client, zooMessage);
         }
 
         private void SendAccountInfo(TcpClient client)
         {
-            var data = new ExampleDto()
-            {
-                ExampleInt = 1,
-                ExampleFloat = 4.263f,
-                OtherStruct = new OtherStruct()
-                {
-                    Id = 1,
-                    Value = 5.5f
-                }
-            };
-            string message = MessageBuilder.Call("SendData").AddParameter(data).Build();
+            string message = MessageBuilder.Call("SendData").Build();
             NetworkUtils.TrySend(client.Client, message);
         }
 
