@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ZooBuilderBackend
+﻿namespace ZooBuilderBackend
 {
     internal class Program
     {
