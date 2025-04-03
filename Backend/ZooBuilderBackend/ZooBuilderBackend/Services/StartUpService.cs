@@ -3,22 +3,22 @@ using ZooBuilderBackend.Data;
 
 namespace ZooBuilderBackend.Services;
 
-public class StartUpService
+public class StartUpService(ApplicationDbContext context)
 {
-    private readonly ApplicationDbContext _db = new();
+    private readonly ApplicationDbContext context = new();
 
     /// <summary>This method creates all the Data needed at Start Up.
     /// The Method throws Exceptions when the player or the zoo could not be found.
     /// Remember: Handle exceptions when calling this method!</summary>
     public StartUpDataDto LoadStartUpData(string deviceId)
     {
-        var player = _db.Player.SingleOrDefault(p => p.DeviceId == deviceId);
+        var player = context.Player.SingleOrDefault(p => p.DeviceId == deviceId);
         if (player == null)
         {
             throw new Exception("Could not find Player with deviceId " + deviceId);
         }
 
-        var zoo = _db.Zoo.SingleOrDefault(z => z.PlayerId == player.Id);
+        var zoo = context.Zoo.SingleOrDefault(z => z.PlayerId == player.Id);
         if (zoo == null)
         {
             throw new Exception("Could not find an existing Zoo for Player with id " + player.Id);
@@ -34,7 +34,7 @@ public class StartUpService
             PlayerId = zoo.PlayerId
         };
 
-        var buildingDtos = _db.Building.Select(b => new BuildingDto
+        var buildingDtos = context.Building.Select(b => new BuildingDto
         {
             Id = b.Id,
             Name = b.Name,
@@ -47,7 +47,7 @@ public class StartUpService
             AnimalId = b.AnimalId
         }).ToArray();
 
-        var animalDtos = _db.Animal.Select(a => new AnimalDto
+        var animalDtos = context.Animal.Select(a => new AnimalDto
         {
             Id = a.Id,
             Species = a.Species,
@@ -57,7 +57,7 @@ public class StartUpService
             Hunger = a.Hunger
         }).ToArray();
 
-        var gridPlacements = _db.GridPlacement.Where(gp => gp.ZooId == zoo.Id).ToList();
+        var gridPlacements = context.GridPlacement.Where(gp => gp.ZooId == zoo.Id).ToList();
         var gridPlacementDtos = Array.Empty<GridPlacementDto>();
         if (gridPlacements.Count > 0)
         {

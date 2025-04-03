@@ -3,34 +3,38 @@ using ZooBuilderBackend.Models;
 
 namespace ZooBuilderBackend.Services;
 
-public class PlayerService
+public class PlayerService(ApplicationDbContext context)
 {
-    private ApplicationDbContext db = new ApplicationDbContext();
-
-    public PlayerService(ApplicationDbContext context)
-    {
-        db = context ?? throw new ArgumentNullException(nameof(context));
-    }
-
-    public void CreatePlayer(string deviceId)
+    public Player Login(string deviceId)
     {
         if (string.IsNullOrEmpty(deviceId))
         {
-            throw new Exception("Missing Device Id");
+            throw new ArgumentException("Missing Device Id");
         }
 
-        if (PlayerExists(deviceId))
-        {
-            throw new Exception("This player already exists!");
-        }
-        var player = new Player { DeviceId = deviceId };
+        var player = context.Player.SingleOrDefault(b => b.DeviceId == deviceId);
 
-        db.Player.Add(player);
-        db.SaveChanges();
+        return player ?? CreatePlayer(deviceId);
     }
 
-    private bool PlayerExists(string deviceId)
+    private Player CreatePlayer(string deviceId)
     {
-        return db.Player.Any(b => b.DeviceId == deviceId);
+        var player = new Player { DeviceId = deviceId };
+
+
+        context.Player.Add(player);
+        context.SaveChanges();
+
+        var zoo = new Zoo
+        {
+            Money = 100,
+            Meat = 10,
+            Vegetables = 10,
+            PlayerId = player.Id
+        };
+        context.Zoo.Add(zoo);
+        context.SaveChanges();
+
+        return player;
     }
 }
