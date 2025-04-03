@@ -5,9 +5,9 @@ namespace SharedNetwork
 {
     public class MessageBuilder
     {
-        private string _invocationType = null!;
-        private string _methodName = null!;
-        private object[] _parameter = null!;
+        private string _invocationType;
+        private string _methodName;
+        private object[] _parameter;
 
         private MessageBuilder() { }
 
@@ -29,8 +29,8 @@ namespace SharedNetwork
 
         public string Build()
         {
-            string parameters = string.Join(":", _parameter);
-            return $"{_invocationType}/{_methodName}:{parameters}";
+            string parameters = _parameter != null ? string.Join(":", _parameter) : string.Empty;
+            return $"{_invocationType}/{_methodName}:{parameters}\\s";
         }
     }
 }

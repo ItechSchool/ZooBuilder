@@ -40,7 +40,7 @@ namespace SharedNetwork
             for (var i = 0; i < properties.Length; i++)
             {
                 var property = properties[i];
-                dataString += property.GetValue(obj).ToString();
+                dataString += property.GetValue(obj)?.ToString();
                 if (i < properties.Length - 1)
                 {
                     dataString += ";";
