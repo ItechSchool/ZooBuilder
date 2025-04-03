@@ -6,12 +6,12 @@ namespace ZooBuilderBackend.Services;
 public class PlayerService
 {
     private ApplicationDbContext db = new ApplicationDbContext();
-    
+
     public PlayerService(ApplicationDbContext context)
     {
         db = context ?? throw new ArgumentNullException(nameof(context));
     }
-    
+
     public void CreatePlayer(string deviceId)
     {
         if (string.IsNullOrEmpty(deviceId))
