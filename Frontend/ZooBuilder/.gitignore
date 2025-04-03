@@ -3,7 +3,8 @@
 *.sln
 /UserSettings
 /Logs
-/[B][b]uilds
+/Builds
+/builds
 /obj
 /.idea
 *.csproj
