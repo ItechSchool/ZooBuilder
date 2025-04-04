@@ -1,4 +1,13 @@
 services:
+  webgl:
+    build:
+      context: ../../../Frontend/ZooBuilder
+      dockerfile: WebGL-Dockerfile
+    ports: 
+      - "80:80"
+        
+    
+  
   postgres:
     image: postgres
     container_name: ZooDb
