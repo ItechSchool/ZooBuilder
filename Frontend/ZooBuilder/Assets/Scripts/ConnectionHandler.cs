@@ -84,7 +84,6 @@ public class ConnectionHandler : MonoBehaviour
             if (_messageQueue.Count == 0) continue;
             
             var message = _messageQueue.Dequeue();
-            Debug.Log(message);
             NetworkUtils.ReadMessage(this, message);
         }
     }
@@ -99,14 +98,11 @@ public class ConnectionHandler : MonoBehaviour
         while (_connected)
         {
             var bytes = new byte[1024];
-            var task = _client.Client.BeginReceive(bytes, 0, 1024, SocketFlags.None, result =>
+            var task = _client.Client.BeginReceive(bytes, 0, 1024, SocketFlags.None, _ =>
             {
-                if (result.IsCompleted)
-                {
-                    NetworkUtils.ReadBuffer(_buffer, bytes, _messageQueue);
-                }
             }, null);
             yield return new WaitUntil(() => task.IsCompleted);
+            NetworkUtils.ReadBuffer(_buffer, bytes, _messageQueue);
         }
         Debug.Log("Disconnected");
     }
@@ -120,7 +116,6 @@ public class ConnectionHandler : MonoBehaviour
     
     private IEnumerator PingServer()
     {
-        Debug.Log("Pinging server");
         while (_connected)
         {
             try
@@ -147,6 +142,7 @@ public class ConnectionHandler : MonoBehaviour
 
     private void Login()
     {
+        Debug.Log("Logging in");
         string message = MessageBuilder.Call("Login").AddParameter(SystemInfo.deviceUniqueIdentifier).Build();
         NetworkUtils.TrySendAsync(_client.Client, message);
     }
