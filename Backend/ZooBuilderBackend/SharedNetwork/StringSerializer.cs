@@ -26,7 +26,19 @@ namespace SharedNetwork
                 }
                 else
                 {
-                    property.SetValue(instance, Convert.ChangeType(values[i], property.PropertyType));
+                    var propertyType = property.PropertyType;
+                    var nullableType = Nullable.GetUnderlyingType(propertyType);
+                    if (nullableType != null)
+                    {
+                        if (values[i].Length > 0)
+                        {
+                            property.SetValue(instance, Convert.ChangeType(values[i], nullableType));
+                        }
+                    }
+                    else
+                    {
+                        property.SetValue(instance, Convert.ChangeType(values[i], propertyType));
+                    }
                 }
             }
 

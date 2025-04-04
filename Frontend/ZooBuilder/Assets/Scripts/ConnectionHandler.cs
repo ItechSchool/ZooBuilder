@@ -168,7 +168,6 @@ public class ConnectionHandler : MonoBehaviour
 
     private void LoadZoo(ZooDto zoo)
     {
-        Debug.Log(zoo);
         ZooInfoUpdated?.Invoke(zoo);
     }
 
