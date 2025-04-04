@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CameraMovement : MonoBehaviour
 {
@@ -38,6 +39,8 @@ public class CameraMovement : MonoBehaviour
     private Vector2 FetchMovementInput()
     {
         var input = new Vector2();
+        if (EventSystem.current.IsPointerOverGameObject())
+            return input;
         if (Input.GetKeyDown(KeyCode.Mouse0))
             _mouseStartDragPosition = Input.mousePosition;
         if (Input.GetKey(KeyCode.Mouse0))
@@ -50,6 +53,8 @@ public class CameraMovement : MonoBehaviour
 
     private void FetchZoomInput()
     {
+        if (EventSystem.current.IsPointerOverGameObject())
+            return;
         float difference = -Input.mouseScrollDelta.y * _zoomSensitivity;
         _zoom = Mathf.Clamp(_zoom + difference, _minZoom, _maxZoom);
     }

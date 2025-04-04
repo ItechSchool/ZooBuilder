@@ -1,6 +1,4 @@
-﻿using ZooBuilderBackend.Services;
-
-namespace ZooBuilderBackend
+﻿namespace ZooBuilderBackend
 {
     internal class Program
     {
