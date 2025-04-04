@@ -169,6 +169,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ip: 127.0.0.1
   port: 1200
+  healthCheckInterval: 2000
+  _retryConnectTime: 5
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

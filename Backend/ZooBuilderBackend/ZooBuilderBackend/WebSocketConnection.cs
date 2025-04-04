@@ -21,8 +21,6 @@ namespace ZooBuilderBackend
         private bool isActive = true;
         private int pingIntervall = 2000;
 
-        private List<byte> _buffer = [];
-        private Queue<string> _messageQueue = new();
         public WebSocketConnection(string ip, int port)
         {
             var server = new TcpListener(IPAddress.Parse(ip), port);
@@ -73,24 +71,28 @@ namespace ZooBuilderBackend
 
         private void ReceiveMessagesFromClient(TcpClient client)
         {
+            List<byte> buffer = [];
+            Queue<string> messageQueue = new();
             while (connections.Contains(client))
             {
                 var bytes = new byte[1024];
                 try
                 {
                     client.Client.Receive(bytes);
-                    NetworkUtils.ReadBuffer(_buffer, bytes, _messageQueue);
+                    if (string.IsNullOrWhiteSpace(Encoding.UTF8.GetString(bytes))) continue;
+                    NetworkUtils.ReadBuffer(buffer, bytes, messageQueue);
                 }
                 catch
                 {
                     break;
                 }
 
-                while (_messageQueue.Count > 0)
+                while (messageQueue.Count > 0)
                 {
-                    NetworkUtils.ReadMessage(this, _messageQueue.Dequeue(), client);
+                    NetworkUtils.ReadMessage(this, messageQueue.Dequeue(), client);
                 }
             }
+            Console.WriteLine("Client disconnected");
             client.Dispose();
         }
 
@@ -125,6 +127,7 @@ namespace ZooBuilderBackend
 
         private void Login(TcpClient client, string deviceId)
         {
+            Console.WriteLine("Client tries to login");
             try
             {
                 _playerService.Login(deviceId);
@@ -133,7 +136,6 @@ namespace ZooBuilderBackend
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 SendException(client, ex.Message.Replace(":", ";"));
             }
         }
@@ -166,7 +168,7 @@ namespace ZooBuilderBackend
 
             var zooMessage = MessageBuilder.Call("LoadZoo").AddParameter(startUpDataDto.Zoo).Build();
             NetworkUtils.TrySend(client.Client, zooMessage);
-            Console.WriteLine("Finished sending data");
+            Console.WriteLine("Send startup data");
         }
 
         private void BuyBuilding(TcpClient client, string clientId, int buildingId)
