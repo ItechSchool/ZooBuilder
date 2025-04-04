@@ -17,6 +17,7 @@ namespace ZooBuilderBackend
         private static readonly ApplicationDbContext Db = new();
         private readonly StartUpService _startUpService = new(Db);
         private readonly PlayerService _playerService = new(Db);
+        private readonly GridPlacementService _gridPlacementService = new(Db);
 
         private bool isActive = true;
         private int pingIntervall = 2000;
@@ -123,6 +124,9 @@ namespace ZooBuilderBackend
             }
         }
 
+        /// <summary>
+        /// Method to log in player. If player does not exist a new one gets created + zoo.
+        /// </summary>
         private void Login(TcpClient client, string deviceId)
         {
             try
@@ -133,15 +137,34 @@ namespace ZooBuilderBackend
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 SendException(client, ex.Message.Replace(":", ";"));
             }
         }
 
-        private void SendException(TcpClient client, string message)
+        private void BuyBuilding(TcpClient client, int buildingId, int x, int y, int zooId)
         {
-            string request = MessageBuilder.Call("Exception").AddParameter(message).Build();
-            NetworkUtils.TrySend(client.Client, request);
+            try
+            {
+                var gridPlacementDto = _gridPlacementService.PlaceBuilding(buildingId, x, y, zooId);
+                SendGridPlacementData(client, gridPlacementDto);
+            }
+            catch (Exception ex)
+            {
+                SendException(client, ex.Message.Replace(":", ";"));
+            }
+        }
+
+        private void MoveBuilding(TcpClient client, int gridPlacementId, int newX, int newY, int zooId)
+        {
+            try
+            {
+                var gridPlacementDto = _gridPlacementService.PlaceBuilding(gridPlacementId, newX, newY, zooId);
+                SendGridPlacementData(client, gridPlacementDto);
+            }
+            catch (Exception ex)
+            {
+                SendException(client, ex.Message.Replace(":", ";"));
+            }
         }
 
         private void SendStartUpData(TcpClient client, StartUpDataDto startUpDataDto)
@@ -166,12 +189,18 @@ namespace ZooBuilderBackend
 
             var zooMessage = MessageBuilder.Call("LoadZoo").AddParameter(startUpDataDto.Zoo).Build();
             NetworkUtils.TrySend(client.Client, zooMessage);
-            Console.WriteLine("Finished sending data");
         }
 
-        private void BuyBuilding(TcpClient client, string clientId, int buildingId)
+        private void SendGridPlacementData(TcpClient client, GridPlacementDto gridPlacementDto)
         {
-            Console.WriteLine($"Client with id: {clientId} bought building {buildingId}");
+            var gridPlacementMessage = MessageBuilder.Call("LoadGridPlacementUpdate").AddParameter(gridPlacementDto).Build();
+            NetworkUtils.TrySend(client.Client, gridPlacementMessage);
+        }
+
+        private void SendException(TcpClient client, string message)
+        {
+            string request = MessageBuilder.Call("Exception").AddParameter(message).Build();
+            NetworkUtils.TrySend(client.Client, request);
         }
     }
 }

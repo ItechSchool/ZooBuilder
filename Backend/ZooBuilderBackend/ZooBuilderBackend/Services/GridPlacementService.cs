@@ -1,19 +1,19 @@
 using Microsoft.EntityFrameworkCore;
+using SharedNetwork.Dtos;
 using ZooBuilderBackend.Data;
 using ZooBuilderBackend.Models;
 
 namespace ZooBuilderBackend.Services;
 
-public class GridPlacementService
+public class GridPlacementService(ApplicationDbContext context)
 {
-    private readonly ApplicationDbContext _db = new();
     /// <summary>In this method a building gets placed on the city grid.
     /// The method checks for certain things (money, spot where it should be placed, buildingId, and ZooId) and throws an exception when it fails.
     ///  Remember: Handle exceptions when calling this method!</summary>
-    public void PlaceBuilding(int buildingId, int x, int y, int zooId)
+    public GridPlacementDto PlaceBuilding(int buildingId, int x, int y, int zooId)
     {
-        var building = _db.Building.Find(buildingId);
-        var zoo = _db.Zoo.Find(zooId);
+        var building = context.Building.Find(buildingId);
+        var zoo = context.Zoo.Find(zooId);
 
         if (building == null)
         {
@@ -25,37 +25,78 @@ public class GridPlacementService
         }
         if (!IsAreaFree(x, y, building, zooId))
         {
-            throw new Exception("This spot is not free, please building somewhere else.");
+            throw new Exception("This spot is not free, please place building somewhere else.");
         }
 
         if (!HasEnoughMoney(zoo.Money, building.Costs))
         {
-            throw new Exception("Zoo with id " + zooId + " does not have enough money to buy building " + buildingId);
+            throw new Exception("You don't have enough money to buy this building");
         }
 
         var entity = new GridPlacement
         { XCoordinate = x, YCoordinate = y, Connected = false, ZooId = zooId, BuildingId = buildingId };
-        _db.GridPlacement.Add(entity);
+        context.GridPlacement.Add(entity);
         zoo.Money -= building.Costs;
-        _db.SaveChanges();
+        context.SaveChanges();
+
+        return CreateGridPlacementDto(entity);
     }
 
-    private static bool HasEnoughMoney(int money, int buildingCosts)
+    public GridPlacementDto UpdateBuildingPosition(int gridPlacementId, int newX, int newY, int zooId)
     {
-        return money >= buildingCosts;
+        var gridPlacement = context.GridPlacement.Find(gridPlacementId);
+        if (gridPlacement == null)
+        {
+            throw new Exception("Not a valid building in the city.");
+        }
+
+        var building = context.Building.FirstOrDefault(b => b.Id == gridPlacement.BuildingId);
+        if (building == null)
+        {
+            throw new Exception("Corresponding building from the catalogue could not be found");
+        }
+        if (!IsAreaFree(newX, newY, building, zooId, gridPlacementId))
+        {
+            throw new Exception("This spot is not free, please place building somewhere else.");
+        }
+
+        gridPlacement.XCoordinate = newX;
+        gridPlacement.YCoordinate = newY;
+
+        context.SaveChanges();
+
+        return CreateGridPlacementDto(gridPlacement);
     }
 
-    private bool IsAreaFree(int x, int y, Building building, int zooId)
+    private GridPlacementDto CreateGridPlacementDto(GridPlacement gridPlacement)
+    {
+        return new GridPlacementDto
+        {
+            Id = gridPlacement.Id,
+            AnimalCount = gridPlacement.AnimalCount,
+            BuildingId = gridPlacement.BuildingId,
+            Connected = gridPlacement.Connected,
+            XCoordinate = gridPlacement.XCoordinate,
+            YCoordinate = gridPlacement.YCoordinate,
+            ZooId = gridPlacement.ZooId
+        };
+    }
+
+    private bool IsAreaFree(int x, int y, Building building, int zooId, int? gridPlacementId = null)
     {
         var rectBx1 = x;
         var rectBx2 = x + building.SizeWidth;
         var rectBy1 = y;
         var rectBy2 = y + building.SizeHeight;
 
-        var allBuildings = _db.GridPlacement.Where(gp => gp.ZooId == zooId)
+        var allBuildings = context.GridPlacement.Where(gp => gp.ZooId == zooId)
             .Include(gridPlacement => gridPlacement.Building).ToArray();
         foreach (var placement in allBuildings)
         {
+            if (gridPlacementId != null && placement.Id == gridPlacementId)
+            {
+                continue;
+            }
             var rectAx1 = placement.XCoordinate;
             var rectAx2 = rectAx1 + placement.Building.SizeWidth;
             var rectAy1 = placement.YCoordinate;
@@ -73,5 +114,10 @@ public class GridPlacementService
         int rectAy1, int rectAy2)
     {
         return rectAx1 < rectBx2 && rectAx2 > rectBx1 && rectAy1 < rectBy2 && rectAy2 > rectBy1;
+    }
+
+    private static bool HasEnoughMoney(int money, int buildingCosts)
+    {
+        return money >= buildingCosts;
     }
 }
