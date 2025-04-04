@@ -32,7 +32,7 @@ namespace SharedNetwork
                     {
                         if (values[i].Length > 0)
                         {
-                            property.SetValue(instance, Convert.ChangeType(values[i], nullableType));    
+                            property.SetValue(instance, Convert.ChangeType(values[i], nullableType));
                         }
                     }
                     else
