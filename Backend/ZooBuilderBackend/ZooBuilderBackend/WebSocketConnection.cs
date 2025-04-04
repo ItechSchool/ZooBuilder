@@ -79,6 +79,7 @@ namespace ZooBuilderBackend
                 try
                 {
                     client.Client.Receive(bytes);
+                    if (string.IsNullOrWhiteSpace(Encoding.UTF8.GetString(bytes))) continue;
                     NetworkUtils.ReadBuffer(buffer, bytes, messageQueue);
                 }
                 catch
@@ -91,6 +92,7 @@ namespace ZooBuilderBackend
                     NetworkUtils.ReadMessage(this, messageQueue.Dequeue(), client);
                 }
             }
+            Console.WriteLine("Client disconnected");
             client.Dispose();
         }
 
@@ -125,6 +127,7 @@ namespace ZooBuilderBackend
 
         private void Login(TcpClient client, string deviceId)
         {
+            Console.WriteLine("Client tries to login");
             try
             {
                 _playerService.Login(deviceId);
