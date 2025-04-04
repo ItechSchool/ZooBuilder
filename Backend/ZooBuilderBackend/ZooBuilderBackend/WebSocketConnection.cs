@@ -20,7 +20,7 @@ namespace ZooBuilderBackend
 
         private bool isActive = true;
         private int pingIntervall = 2000;
-        
+
         public WebSocketConnection(string ip, int port)
         {
             var server = new TcpListener(IPAddress.Parse(ip), port);
