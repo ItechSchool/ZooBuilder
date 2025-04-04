@@ -13,21 +13,6 @@ public class PlayerService(ApplicationDbContext context)
         {
             throw new ArgumentException("Missing Device Id");
         }
-
-        Console.WriteLine(deviceId);
-
-        // Regex pattern to match non-printable characters
-        var regex = new Regex(@"[^\x20-\x7E]");
-
-        if (regex.IsMatch(deviceId))
-        {
-            Console.WriteLine("The string contains non-printable characters.");
-        }
-        else
-        {
-            Console.WriteLine("The string does not contain non-printable characters.");
-        }
-
         var player = context.Player.FirstOrDefault(b => b.DeviceId == deviceId);
 
         return player ?? CreatePlayer(deviceId);
