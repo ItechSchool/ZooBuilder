@@ -13,7 +13,7 @@ public class ConnectionHandler : MonoBehaviour
 {
     public static ConnectionHandler Instance { get; private set; }
 
-    public bool Connected => Instance._client is { Connected: true };
+    public bool Connected => _connected;
     public Action<BuildingDto> BuildingAdded;
     public Action<AnimalDto> AnimalAdded;
     public Action<GridPlacementDto> GridPlacementAdded;
@@ -24,9 +24,17 @@ public class ConnectionHandler : MonoBehaviour
     [SerializeField] private string ip;
     [SerializeField] private int port;
     
+    [SerializeField] private int healthCheckInterval;
+    [SerializeField] private float _retryConnectTime;
+    
     private TcpClient _client;
     private readonly Queue<string> _messageQueue = new Queue<string>();
-    private List<byte> _buffer = new List<byte>();
+    private readonly List<byte> _buffer = new List<byte>();
+
+    private bool _connected;
+    private bool _tryingToConnect;
+
+    private float _timeToConnect;
     
     private void Awake()
     {
@@ -35,8 +43,28 @@ public class ConnectionHandler : MonoBehaviour
 
     void Start()
     {
+        ConnectToServer();
+    }
+    
+    private void Update()
+    {
+        if (_tryingToConnect && _connected == false)
+        {
+            _timeToConnect += Time.deltaTime;
+            if (_timeToConnect >= _retryConnectTime)
+            {
+                ConnectToServer();
+            }
+        }
+    }
+
+    private void ConnectToServer()
+    {
+        StopAllCoroutines();
         _client = new TcpClient();
         _client.ConnectAsync(IPAddress.Parse(ip), port);
+        _tryingToConnect = true;
+        _timeToConnect = 0f;
         StartCoroutine(ReceiveMessages());
         StartCoroutine(ReadMessages());
     }
@@ -49,21 +77,26 @@ public class ConnectionHandler : MonoBehaviour
 
     private IEnumerator ReadMessages()
     {
-        while (_client.Connected)
+        yield return new WaitUntil(() => _connected);
+        while (_connected)
         {
             yield return null;
             if (_messageQueue.Count == 0) continue;
             
-            NetworkUtils.ReadMessage(this, _messageQueue.Dequeue());
+            var message = _messageQueue.Dequeue();
+            Debug.Log(message);
+            NetworkUtils.ReadMessage(this, message);
         }
     }
     
     private IEnumerator ReceiveMessages()
     {
         yield return new WaitUntil(() => _client.Connected);
+        _connected = true;
         Debug.Log("Connected");
-        Login();
-        while (_client.Connected)
+        StartCoroutine(PingServer());
+        StartCoroutine(AwaitLogin());
+        while (_connected)
         {
             var bytes = new byte[1024];
             var task = _client.Client.BeginReceive(bytes, 0, 1024, SocketFlags.None, result =>
@@ -76,6 +109,34 @@ public class ConnectionHandler : MonoBehaviour
             yield return new WaitUntil(() => task.IsCompleted);
         }
         Debug.Log("Disconnected");
+    }
+
+    private IEnumerator AwaitLogin()
+    {
+        yield return new WaitUntil(() => _connected);
+        yield return null;
+        Login();
+    }
+    
+    private IEnumerator PingServer()
+    {
+        Debug.Log("Pinging server");
+        while (_connected)
+        {
+            try
+            {
+                _client.Client.Send(Array.Empty<byte>());
+            }
+            catch
+            {
+                break;
+            }
+
+            yield return new WaitForSeconds(healthCheckInterval / 1000f);
+        }
+        Debug.LogWarning("Disconnected from server");
+        _connected = false;
+        _timeToConnect = 0f;
     }
 
     private void BuyBuilding(int id)
